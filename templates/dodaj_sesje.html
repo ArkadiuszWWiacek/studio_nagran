@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Studio nagrań - Inżynierowie (dodaj)
+{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <div class="row py-1 py-sm-3">
+            <div class="col text-light">
+                <h2>
+                    Dodaj nową sesję nagraniową
+                </h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-light">
+                <form method="post">
+                    <div class="row mb-3">
+                        <label for="artysta" class="col-sm-2">
+                            Artysta:
+                        </label>
+
+                        <div class="col-sm-10">
+                            <select name="artysta" id="artysta" class="form-control" required>
+                                <option value="">
+                                    -- Wybierz artystę --
+                                </option>
+                                {% for a in artysci %}
+                                    <option value="{{ a.IdArtysty }}">
+                                        {{ a.Nazwa }} - {{ a.Imie }} {{ a.Nazwisko }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="inzynier" class="col-sm-2">
+                            Inżynier:
+                        </label>
+                        <div class="col-sm-10">
+                            <select name="inzynier" id="inzynier" class="form-control" required>
+                                <option value="">
+                                    -- Wybierz inżyniera --
+                                </option>
+                                {% for i in inzynierowie %}
+                                    <option value="{{ i.IdInzyniera }}">
+                                        {{ i.Imie }} {{ i.Nazwisko }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="termin_start" class="col-sm-4">
+                            Data rozpoczęcia sesji (format: YYYY-MM-DD HH:MM:SS):
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="text"
+                                   name="termin_start"
+                                   id="termin_start"
+                                   placeholder="2025-11-17 18:00:00"
+                                   class="form-control"
+                                   required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="termin_stop" class="col-sm-4">
+                            Data zakończenia sesji (format: YYYY-MM-DD HH:MM:SS):
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="text"
+                                   name="termin_stop"
+                                   id="termin_stop"
+                                   placeholder="2025-11-17 18:00:00"
+                                   class="form-control">
+                        </div>
+                    </div>
+
+                    <label>
+                        Sprzęt (zaznacz dowolną liczbę):
+                    </label>
+                    <div class="form-check list-of-items">
+                        {% for s in sprzety %}
+                            <div class="p-2">
+                                <input type="checkbox"
+                                       name="sprzet"
+                                       value="{{ s.IdSprzetu }}"
+                                       id="sprzet_{{ s.IdSprzetu }}"
+                                       class="form-check-input">
+                                <label for="sprzet_{{ s.IdSprzetu }}" class="form-check-label">
+                                    {{ s.Kategoria }}: {{ s.Producent }} {{ s.Model }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-12 col-sm pt-2">
+                            <button type="submit" class="btn btn-primary btn-block">
+                                Zapisz
+                            </button>
+                        </div>
+                        <div class="col-12 col-sm pt-4 pt-sm-2 d-flex justify-content-sm-end">
+                            <a href="{{ url_for("sesje_view") }}"
+                               class="btn btn-secondary btn-block">Powrót do listy sesji</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

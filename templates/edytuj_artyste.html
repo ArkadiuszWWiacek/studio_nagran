@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Studio nagrań - Artyści (edycja)
+{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <div class="row py-1 py-sm-3">
+            <div class="col text-light">
+                <h2>
+                    Edytuj artystę
+                </h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-light">
+                <form method="post">
+                    <div class="row mb-3">
+                        <label class="col-sm-2" for="nazwa">
+                            Nazwa:
+                        </label>
+                        <div class="col-sm-10">
+                            <input type="text" name="nazwa" id="nazwa" class="form-control" value="{{ artysta.Nazwa }}" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="col-sm-2" for="imie">
+                            Imię:
+                        </label>
+                        <div class="col-sm-10">
+                            <input type="text" name="imie" id="imie" class="form-control" value="{{ artysta.Imie }}">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="col-sm-2" for="nazwisko">
+                            Nazwisko:
+                        </label>
+                        <div class="col-sm-10">
+                            <input type="text" name="nazwisko" id="nazwisko" class="form-control" value="{{ artysta.Nazwisko }}">
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-12 col-sm pt-2">
+                            <button type="submit" class="btn btn-primary btn-block">
+                                Zapisz zmiany
+                            </button>
+                        </div>
+                        <div class="col-12 col-sm pt-4 pt-sm-2 d-flex justify-content-sm-end">
+                            <a href="{{ url_for('artysci_view') }}"
+                               class="btn btn-secondary btn-block">Powrót do listy artystów</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

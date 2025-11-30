@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Studio nagrań - Inżynierowie (edycja)
+{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <div class="row py-1 py-sm-3">
+            <div class="col text-light">
+                <h2>
+                    Edytuj inżyniera
+                </h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-light">
+                <form method="post">
+                    <div class="row mb-3">
+                        <label class="col-sm-2" for="imie">
+                            Imię:
+                        </label>
+                        <div class="col-sm-10">
+                            <input type="text" name="imie" id="imie" class="form-control" value="{{ inzynier.Imie }}" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="col-sm-2" for="nazwisko">
+                            Nazwisko:
+                        </label>
+                        <div class="col-sm-10">
+                            <input type="text" name="nazwisko" id="nazwisko" class="form-control" value="{{ inzynier.Nazwisko }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-12 col-sm pt-2">
+                            <button type="submit" class="btn btn-primary btn-block">
+                                Zapisz zmiany
+                            </button>
+                        </div>
+                        <div class="col-12 col-sm pt-4 pt-sm-2 d-flex justify-content-sm-end">
+                            <a href="{{ url_for('inzynierowie_view') }}"
+                               class="btn btn-secondary btn-block">Powrót do listy inżynierów</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

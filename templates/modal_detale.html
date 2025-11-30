@@ -1,0 +1,123 @@
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <h4 class="text-primary">
+                        Informacje o sesji
+                    </h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <h5>
+                        Identyfikator sesji: {{ sesja_details.IdSesji }}
+                    </h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <h5>
+                        Artysta: {{ sesja_details.artysci.Nazwa }} - {{ sesja_details.artysci.Imie }} {{ sesja_details.artysci.Nazwisko }}
+                    </h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <h5>
+                        Inżynier: {{ sesja_details.inzynierowie.Imie }} {{ sesja_details.inzynierowie.Nazwisko }}
+                    </h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <h5>
+                        Termin rozpoczęcia: {{ sesja_details.TerminStart }}
+                    </h5>
+                    <h5>
+                        Termin zakończenia: {{ sesja_details.TerminStart if sesja_details.TerminStart != None else "Nie zakończona" }}
+                    </h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <h4 class="text-primary">
+                        Utwory w sesji
+                    </h4>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">
+                                        #
+                                    </th>
+                                    <th scope="col">
+                                        Tytuł
+                                    </th>
+                                </tr>
+                            </thead>
+                            {% for utwor in sesja_details.utwory %}
+                                <tr>
+                                    <td>
+                                        {{ utwor.IdUtworu }}
+                                    </td>
+                                    <td>
+                                        {{ utwor.Tytul }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <h4 class="text-primary">
+                        Sprzęt użyty w sesji
+                    </h4>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">
+                                        #
+                                    </th>
+                                    <th scope="col">
+                                        Producent
+                                    </th>
+                                    <th scope="col">
+                                        Model
+                                    </th>
+                                    <th scope="col">
+                                        Kategoria
+                                    </th>
+                                </tr>
+                            </thead>
+                            {% for sprzet_sesja in sesja_details.sprzety_sesje %}
+                                <tr>
+                                    <td>
+                                        {{ sprzet_sesja.sprzet.IdSprzetu }}
+                                    </td>
+                                    <td>
+                                        {{ sprzet_sesja.sprzet.Producent }}
+                                    </td>
+                                    <td>
+                                        {{ sprzet_sesja.sprzet.Model }}
+                                    </td>
+                                    <td>
+                                        {{ sprzet_sesja.sprzet.Kategoria }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

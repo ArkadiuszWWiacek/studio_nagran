@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Studio nagrań - Sprzęt (dodaj)
+{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <div class="row py-1 py-sm-3">
+            <div class="col text-light">
+                <h2>
+                    Dodaj nowy sprzęt
+                </h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-light">
+                <form method="post">
+                    <div class="row mb-3">
+                        <label class="col-sm-2" for="producent">
+                            Producent:
+                        </label>
+                        <div class="col-sm-10">
+                            <input type="text" name="producent" id="producent" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="col-sm-2" for="model">
+                            Model:
+                        </label>
+                        <div class="col-sm-10">
+                            <input type="text" name="model" id="model" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="col-sm-2" for="kategoria">
+                            Kategoria:
+                        </label>
+                        <div class="col-sm-10">
+                            <select id="kategoria" name="kategoria" class="form-select" required>
+                                <option value="">
+                                    -- Wybierz kategorię --
+                                </option>
+                                <option value="Akcesoria">
+                                    Akcesoria
+                                </option>
+                                <option value="Mikrofony">
+                                    Mikrofony
+                                </option>
+                                <option value="Procesory">
+                                    Procesory
+                                </option>
+                                <option value="Przewody">
+                                    Przewody
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-12 col-sm pt-2">
+                            <button type="submit" class="btn btn-primary btn-block">
+                                Zapisz
+                            </button>
+                        </div>
+                        <div class="col-12 col-sm pt-4 pt-sm-2 d-flex justify-content-sm-end">
+                            <a href="{{ url_for("sprzet_view") }}"
+                               class="btn btn-secondary btn-block">Powrót do listy sprzętu</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

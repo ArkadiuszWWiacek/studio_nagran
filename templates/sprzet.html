@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Studio nagrań - Sprzęt
+{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <div class="row py-1 py-sm-3">
+            <div class="col text-light">
+                <h2>
+                    Sprzęt
+                </h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <table class="table table-hover table-dark">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                #
+                            </th>
+                            <th scope="col">
+                                Producent
+                            </th>
+                            <th scope="col">
+                                Model
+                            </th>
+                            <th scope="col">
+                                Kategoria
+                            </th>
+                        </tr>
+                    </thead>
+                    {% for sprzet in sprzety %}
+                        <tr>
+                            <td>
+                                {{ sprzet.IdSprzetu }}
+                            </td>
+                            <td>
+                                {{ sprzet.Producent }}
+                            </td>
+                            <td>
+                                {{ sprzet.Model }}
+                            </td>
+                            <td>
+                                {{ sprzet.Kategoria }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-sm pt-2">
+                <a href="{{ url_for("dodaj_sprzet_view") }}"
+                   class="btn btn-primary btn-block">Dodaj nowy sprzęt</a>
+            </div>
+
+            <div class="col-12 col-sm pt-2 d-flex justify-content-sm-end">
+                <a href="{{ url_for("index") }}" class="btn btn-secondary btn-block">Powrót</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,52 @@
+main {
+	/* background: rgba(0, 0, 0, 0.7) url('images/colour_wave.jpg'); */
+	background-blend-mode: darken;
+	background-position: center;
+	background-size: cover;
+}
+
+tr[data-bs-toggle='modal'] {
+	cursor: pointer;
+}
+
+body {
+	background-image: linear-gradient(to right, red, yellow, green, red, yellow), url('images/colour_wave.jpg');
+	animation: gradientShift 40s infinite linear;
+	background-repeat: no-repeat;
+	background-blend-mode: darken;
+	background-position: absolute;
+	background-size: 400% 100%, cover;
+	background-attachment: fixed;
+}
+
+@keyframes gradientShift {
+	0% {
+		background-position: 0% 0%, center;
+	}
+	100% {
+		background-position: 100% 0%, center;
+	}
+}
+
+.righteous-regular {
+	font-family: 'Righteous', sans-serif;
+	font-weight: 400;
+	font-style: normal;
+}
+
+.list-of-items {
+	column-count: 1;
+	column-gap: 1rem;
+}
+
+@media (min-width: 768px) {
+	.list-of-items {
+		column-count: 2;
+	}
+}
+
+@media (min-width: 1080px) {
+	.list-of-items {
+		column-count: 3;
+	}
+}

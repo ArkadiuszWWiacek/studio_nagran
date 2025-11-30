@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Studio nagrań - Inżynierowie (dodaj)
+{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <div class="row py-1 py-sm-3">
+            <div class="col text-light">
+                <h2>
+                    Dodaj nowy utwór
+                </h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-light">
+                <form method="post">
+                    <div class="row mb-3">
+                        <label class="col-sm-2" for="artysta">
+                            Artysta:
+                        </label>
+                        <div class="col-sm-10">
+                            <select name="artysta" id="artysta" class="form-control" required>
+                                <option value="">
+                                    -- Wybierz artystę --
+                                </option>
+                                {% for a in artysci %}
+                                    <option value="{{ a.IdArtysty }}">
+                                        {{ a.Nazwa }} - {{ a.Imie }} {{ a.Nazwisko }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2" for="idSesji">
+                            Sesja:
+                        </label>
+                        <div class="col-sm-10">
+                            <select name="idSesji" id="idSesji" class="form-control" required>
+                                <option value="">
+                                    -- Wybierz sesję --
+                                </option>
+                                {% for s in sesje %}
+                                    <option value="{{ s.IdSesji }}" data-artysta="{{ s.IdArtysty }}">
+                                        {{ s.IdSesji }}: {{ s.artysci.Nazwa }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2" for="tytul">
+                            Tytuł utworu:
+                        </label>
+                        <div class="col-sm-10">
+                            <input type="text" name="tytul" id="tytul" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-12 col-sm pt-2">
+                            <button type="submit" class="btn btn-primary btn-block">
+                                Zapisz
+                            </button>
+                        </div>
+                        <div class="col-12 col-sm pt-4 pt-sm-2 d-flex justify-content-sm-end">
+                            <a href="{{ url_for("utwory_view") }}"
+                               class="btn btn-secondary btn-block">Powrót do listy utworów</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const artystaSelect = document.getElementById('artysta');
+    const sesjaSelect = document.getElementById('idSesji');
+
+    const allArtysciOptions = [];
+    for (let i = 1; i < artystaSelect.options.length; i++) {
+        allArtysciOptions.push({
+            value: artystaSelect.options[i].value,
+            text: artystaSelect.options[i].text
+        });
+    }
+
+    const allSesjeOptions = [];
+    for (let i = 1; i < sesjaSelect.options.length; i++) {
+        allSesjeOptions.push({
+            value: sesjaSelect.options[i].value,
+            text: sesjaSelect.options[i].text,
+            artysta: sesjaSelect.options[i].getAttribute('data-artysta')
+        });
+    }
+
+    function resetArtysci() {
+        artystaSelect.innerHTML = '<option value="">-- Wybierz artystę --</option>';
+        allArtysciOptions.forEach(artysta => {
+            const option = document.createElement('option');
+            option.value = artysta.value;
+            option.textContent = artysta.text;
+            artystaSelect.appendChild(option);
+        });
+    }
+
+    function resetSesje() {
+        sesjaSelect.innerHTML = '<option value="">-- Wybierz sesję --</option>';
+        allSesjeOptions.forEach(sesja => {
+            const option = document.createElement('option');
+            option.value = sesja.value;
+            option.textContent = sesja.text;
+            option.setAttribute('data-artysta', sesja.artysta);
+            sesjaSelect.appendChild(option);
+        });
+    }
+
+    artystaSelect.addEventListener('change', function () {
+        const wybranyArtysta = this.value;
+
+        if (wybranyArtysta) {
+            sesjaSelect.innerHTML = '<option value="">-- Wybierz sesję --</option>';
+            allSesjeOptions.forEach(sesja => {
+                if (String(sesja.artysta) === String(wybranyArtysta)) {
+                    const option = document.createElement('option');
+                    option.value = sesja.value;
+                    option.textContent = sesja.text;
+                    option.setAttribute('data-artysta', sesja.artysta);
+                    sesjaSelect.appendChild(option);
+                }
+            });
+        } else {
+            resetSesje();
+            resetArtysci();
+        }   
+    });
+
+    sesjaSelect.addEventListener('change', function () {
+        const wybranaWartosc = this.value;
+
+        if (wybranaWartosc) {
+            const wybranaSesja = this.options[this.selectedIndex];
+            const idArtysty = wybranaSesja.getAttribute('data-artysta');
+
+            if (idArtysty) {
+                artystaSelect.innerHTML = '<option value="">-- Wybierz artystę --</option>';
+                allArtysciOptions.forEach(artysta => {
+                    if (String(artysta.value) === String(idArtysty)) {
+                        const option = document.createElement('option');
+                        option.value = artysta.value;
+                        option.textContent = artysta.text;
+                        artystaSelect.appendChild(option);
+                    }
+                });
+                artystaSelect.value = idArtysty;
+            }
+        } else {
+            resetArtysci();
+            resetSesje();
+        }
+    });
+    </script>
+{% endblock content %}

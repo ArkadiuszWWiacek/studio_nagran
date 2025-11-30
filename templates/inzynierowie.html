@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Studio nagrań - Inżynierowie
+{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <div class="row py-1 py-sm-3">
+            <div class="col text-light">
+                <h2>
+                    Inżynierowie
+                </h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <table class="table table-hover table-dark">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                #
+                            </th>
+                            <th scope="col">
+                                Imię
+                            </th>
+                            <th scope="col">
+                                Nazwisko
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    {% for inzynier in inzynierowie %}
+                        <tr>
+                            <td>
+                                {{ inzynier.IdInzyniera }}
+                            </td>
+                            <td>
+                                {{ inzynier.Imie }}
+                            </td>
+                            <td>
+                                {{ inzynier.Nazwisko }}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('edytuj_inzyniera_view', IdInzyniera=inzynier.IdInzyniera) }}">Edytuj</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-sm pt-2">
+                <a href="{{ url_for("dodaj_inzyniera_view") }}"
+                   class="btn btn-primary btn-block">Dodaj nowego
+                Inżyniera</a>
+            </div>
+
+            <div class="col-12 col-sm d-flex justify-content-sm-end pt-2">
+                <a href="{{ url_for("index") }}" class="btn btn-secondary btn-block">Powrót</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
