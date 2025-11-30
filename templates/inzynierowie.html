@@ -19,13 +19,19 @@
                     <thead>
                         <tr>
                             <th scope="col">
-                                #
+                                <a href="?sort=IdInzyniera&order={% if sort_by == 'IdInzyniera' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                    # {% if sort_by == 'IdInzyniera' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                </a>
                             </th>
                             <th scope="col">
-                                Imię
+                                <a href="?sort=Imie&order={% if sort_by == 'Imie' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                    Imię {% if sort_by == 'Imie' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                </a>
                             </th>
                             <th scope="col">
-                                Nazwisko
+                                <a href="?sort=Nazwisko&order={% if sort_by == 'Nazwisko' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                    Nazwisko {% if sort_by == 'Nazwisko' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                </a>
                             </th>
                             <th></th>
                         </tr>

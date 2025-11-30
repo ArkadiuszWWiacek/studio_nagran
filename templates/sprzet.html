@@ -19,16 +19,24 @@
                     <thead>
                         <tr>
                             <th scope="col">
-                                #
+                                <a href="?sort=IdSprzetu&order={% if sort_by == 'IdSprzetu' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                    # {% if sort_by == 'IdSprzetu' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                </a>
                             </th>
                             <th scope="col">
-                                Producent
+                                <a href="?sort=Producent&order={% if sort_by == 'Producent' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                    Producent {% if sort_by == 'Producent' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                </a>
                             </th>
                             <th scope="col">
-                                Model
+                                <a href="?sort=Model&order={% if sort_by == 'Model' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                    Model {% if sort_by == 'Model' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                </a>
                             </th>
                             <th scope="col">
-                                Kategoria
+                                <a href="?sort=Kategoria&order={% if sort_by == 'Kategoria' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                    Kategoria {% if sort_by == 'Kategoria' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                </a>
                             </th>
                         </tr>
                     </thead>

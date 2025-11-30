@@ -20,13 +20,19 @@
                     <thead>
                         <tr>
                             <th scope="col">
-                                #
+                                <a href="?sort=IdArtysty&order={% if sort_by == 'IdArtysty' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                    # {% if sort_by == 'IdArtysty' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                </a>
                             </th>
                             <th scope="col">
-                                Nazwa
+                                <a href="?sort=Nazwa&order={% if sort_by == 'Nazwa' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                    Nazwa {% if sort_by == 'Nazwa' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                </a>
                             </th>
                             <th scope="col">
-                                Artysta
+                                <a href="?sort=Imie&order={% if sort_by == 'Imie' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                    Artysta {% if sort_by == 'Imie' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                </a>
                             </th>
                             <th></th>
                         </tr>
@@ -46,7 +52,7 @@
                                 {{ artysta.Imie }} {{ artysta.Nazwisko }}
                             </td>
                             <td>
-                                <a href="{{ url_for('edytuj_artyste_view', IdArtysty=artysta.IdArtysty) }}">Edytuj</a>
+                                <a href="{{ url_for('edytuj_artyste_view', IdArtysty=artysta.IdArtysty) }}" onclick="event.stopPropagation()">Edytuj</a>
                             </td>
                         </tr>
                     {% endfor %}

@@ -22,13 +22,19 @@
                             <th>
                                 <div class="row">
                                     <div class="col-6 col-sm-4">
-                                        #
+                                        <a href="?sort=IdSesji&order={% if sort_by == 'IdSesji' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                            # {% if sort_by == 'IdSesji' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
                                     </div>
                                     <div class="col-6 col-sm-4">
-                                        Artysta
+                                        <a href="?sort=NazwaArtysty&order={% if sort_by == 'NazwaArtysty' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                            Artysta {% if sort_by == 'NazwaArtysty' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
                                     </div>
                                     <div class="col-6 col-sm-4">
-                                        Inżynier
+                                        <a href="?sort=NazwiskoInzyniera&order={% if sort_by == 'NazwiskoInzyniera' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                            Inżynier {% if sort_by == 'NazwiskoInzyniera' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
                                     </div>
                                 </div>
                             </th>
