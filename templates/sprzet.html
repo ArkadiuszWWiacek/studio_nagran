@@ -15,44 +15,54 @@
         </div>
         <div class="row">
             <div class="col">
+
                 <table class="table table-hover table-dark">
                     <thead>
-                        <tr>
-                            <th scope="col">
-                                <a href="?sort=IdSprzetu&order={% if sort_by == 'IdSprzetu' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
-                                    # {% if sort_by == 'IdSprzetu' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
-                                </a>
-                            </th>
-                            <th scope="col">
-                                <a href="?sort=Producent&order={% if sort_by == 'Producent' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
-                                    Producent {% if sort_by == 'Producent' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
-                                </a>
-                            </th>
-                            <th scope="col">
-                                <a href="?sort=Model&order={% if sort_by == 'Model' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
-                                    Model {% if sort_by == 'Model' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
-                                </a>
-                            </th>
-                            <th scope="col">
-                                <a href="?sort=Kategoria&order={% if sort_by == 'Kategoria' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
-                                    Kategoria {% if sort_by == 'Kategoria' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
-                                </a>
+                        <tr class="d-sm-table-row">
+                            <th>
+                                <div class="row">
+                                    <div class="col-12 d-sm-none">Sortowanie</div>
+                                    <div class="col-auto col-sm-2">
+                                        <a href="?sort=IdSprzetu&order={% if sort_by == 'IdSprzetu' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                            # {% if sort_by == 'IdSprzetu' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
+                                    </div>
+                                    <div class="col-auto col-sm-3">
+                                        <a href="?sort=Producent&order={% if sort_by == 'Producent' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                            Producent {% if sort_by == 'Producent' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
+                                    </div>
+                                    <div class="col-auto col-sm-4">
+                                        <a href="?sort=Model&order={% if sort_by == 'Model' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                            Model {% if sort_by == 'Model' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
+                                    </div>
+                                    <div class="col-auto col-sm-3">
+                                        <a href="?sort=Kategoria&order={% if sort_by == 'Kategoria' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                            Kategoria {% if sort_by == 'Kategoria' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
+                                    </div>
+                                </div>
                             </th>
                         </tr>
                     </thead>
                     {% for sprzet in sprzety %}
                         <tr>
                             <td>
-                                {{ sprzet.IdSprzetu }}
-                            </td>
-                            <td>
-                                {{ sprzet.Producent }}
-                            </td>
-                            <td>
-                                {{ sprzet.Model }}
-                            </td>
-                            <td>
-                                {{ sprzet.Kategoria }}
+                                <div class="row">
+                                    <div class="col-4 col-sm-2">
+                                        <span class="d-inline d-sm-none"># </span>{{ sprzet.IdSprzetu }}
+                                    </div>
+                                    <div class="col-8 col-sm-3">
+                                        {{ sprzet.Producent }}
+                                    </div>
+                                    <div class="col-4 col-sm-4">
+                                        {{ sprzet.Model }}
+                                    </div>
+                                    <div class="col-8 col-sm-3">
+                                        {{ sprzet.Kategoria }}
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}

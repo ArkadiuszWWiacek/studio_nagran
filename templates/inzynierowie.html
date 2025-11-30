@@ -15,40 +15,50 @@
         </div>
         <div class="row">
             <div class="col">
+
                 <table class="table table-hover table-dark">
                     <thead>
-                        <tr>
-                            <th scope="col">
-                                <a href="?sort=IdInzyniera&order={% if sort_by == 'IdInzyniera' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
-                                    # {% if sort_by == 'IdInzyniera' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
-                                </a>
-                            </th>
-                            <th scope="col">
-                                <a href="?sort=Imie&order={% if sort_by == 'Imie' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
-                                    Imię {% if sort_by == 'Imie' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
-                                </a>
-                            </th>
-                            <th scope="col">
-                                <a href="?sort=Nazwisko&order={% if sort_by == 'Nazwisko' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
-                                    Nazwisko {% if sort_by == 'Nazwisko' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
-                                </a>
-                            </th>
-                            <th></th>
+                        <tr class="d-sm-table-row">
+                            <th>
+                                <div class="row">
+                                    <div class="d-sm-none">Sortowanie</div>
+                                    <div class="col-auto col-sm-2">
+                                        <a href="?sort=IdInzyniera&order={% if sort_by == 'IdInzyniera' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                            # {% if sort_by == 'IdInzyniera' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
+                                    </div>
+                                    <div class="col-auto col-sm-4">
+                                        <a href="?sort=Imie&order={% if sort_by == 'Imie' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                            Imię {% if sort_by == 'Imie' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
+                                    </div>
+                                    <div class="col-auto col-sm-4">
+                                        <a href="?sort=Nazwisko&order={% if sort_by == 'Nazwisko' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                            Nazwisko {% if sort_by == 'Nazwisko' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
+                                    </div>
+                                    <div class="col-sm-2 d-none d-sm-block"></div>
+                                </div>
+                            </th>    
                         </tr>
                     </thead>
                     {% for inzynier in inzynierowie %}
                         <tr>
                             <td>
-                                {{ inzynier.IdInzyniera }}
-                            </td>
-                            <td>
-                                {{ inzynier.Imie }}
-                            </td>
-                            <td>
-                                {{ inzynier.Nazwisko }}
-                            </td>
-                            <td>
-                                <a href="{{ url_for('edytuj_inzyniera_view', IdInzyniera=inzynier.IdInzyniera) }}">Edytuj</a>
+                                <div class="row">
+                                    <div class="col-12 col-sm-2">
+                                        <span class="d-inline d-sm-none"># </span>{{ inzynier.IdInzyniera }}
+                                    </div>
+                                    <div class="col-auto col-sm-4">
+                                        {{ inzynier.Imie }}
+                                    </div>
+                                    <div class="col-auto col-sm-4">
+                                        {{ inzynier.Nazwisko }}
+                                    </div>
+                                    <div class="col col-sm-2 align-self-end text-end">
+                                        <a href="{{ url_for('edytuj_inzyniera_view', IdInzyniera=inzynier.IdInzyniera) }}">Edytuj</a>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}

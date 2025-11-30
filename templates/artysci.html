@@ -18,41 +18,53 @@
 
                 <table class="table table-hover table-dark">
                     <thead>
-                        <tr>
-                            <th scope="col">
-                                <a href="?sort=IdArtysty&order={% if sort_by == 'IdArtysty' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
-                                    # {% if sort_by == 'IdArtysty' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
-                                </a>
+                        <tr class="d-sm-table-row">
+                            <th>
+                                <div class="row">
+                                    <div class="d-sm-none">Sortowanie</div>
+                                    <div class="col-auto col-sm-2">
+                                        <a href="?sort=IdArtysty&order={% if sort_by == 'IdArtysty' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                            # {% if sort_by == 'IdArtysty' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
+                                    </div>
+                                    <div class="col-auto col-sm-4">
+                                        <a href="?sort=Nazwa&order={% if sort_by == 'Nazwa' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                            Nazwa {% if sort_by == 'Nazwa' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
+                                    </div>
+                                    <div class="col-auto col-sm-4">
+                                        <a href="?sort=Imie&order={% if sort_by == 'Imie' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
+                                            Artysta {% if sort_by == 'Imie' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
+                                    </div>
+                                    <div class="col-sm-2 d-none d-sm-block"></div>
+                                </div>
                             </th>
-                            <th scope="col">
-                                <a href="?sort=Nazwa&order={% if sort_by == 'Nazwa' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
-                                    Nazwa {% if sort_by == 'Nazwa' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
-                                </a>
-                            </th>
-                            <th scope="col">
-                                <a href="?sort=Imie&order={% if sort_by == 'Imie' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
-                                    Artysta {% if sort_by == 'Imie' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
-                                </a>
-                            </th>
-                            <th></th>
                         </tr>
                     </thead>
+                    
                     {% for artysta in artysci %}
                         <tr data-bs-toggle="modal"
                             data-bs-target="#artistModal"
                             data-artist-id="{{ artysta.IdArtysty }}"
                             data-artist-name="{{ artysta.Nazwa }}">
                             <td>
-                                {{ artysta.IdArtysty }}
-                            </td>
-                            <td>
-                                {{ artysta.Nazwa }}
-                            </td>
-                            <td>
-                                {{ artysta.Imie }} {{ artysta.Nazwisko }}
-                            </td>
-                            <td>
-                                <a href="{{ url_for('edytuj_artyste_view', IdArtysty=artysta.IdArtysty) }}" onclick="event.stopPropagation()">Edytuj</a>
+                                <div class="row">
+                                    <div class="col-12 col-sm-2">
+                                        <span class="d-inline d-sm-none"># </span>{{ artysta.IdArtysty }}
+                                    </div>
+                                    <div class="col-12 col-sm-4">
+                                        <span class="d-inline d-sm-none"></span>
+                                        {{ artysta.Nazwa }}
+                                    </div>
+                                    <div class="col-6 col-sm-4">
+                                        <span class="d-inline d-sm-none"></span>
+                                        {{ artysta.Imie }} {{ artysta.Nazwisko }}
+                                    </div>
+                                    <div class="col-6 col-sm-2 align-self-end text-end">
+                                        <a href="{{ url_for('edytuj_artyste_view', IdArtysty=artysta.IdArtysty) }}" onclick="event.stopPropagation()">Edytuj</a>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}
