@@ -21,20 +21,46 @@
                         <tr class="d-sm-table-row">
                             <th>
                                 <div class="row">
-                                    <div class="d-sm-none">Sortowanie</div>
+                                    <div class="d-sm-none">
+                                        Sortowanie
+                                    </div>
                                     <div class="col-auto col-sm-4">
-                                        <a href="?sort=IdUtworu&order={% if sort_by == 'IdUtworu' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
-                                            # {% if sort_by == 'IdUtworu' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        <a href="?sort=IdUtworu&order={% if sort_by == 'IdUtworu' and order == 'asc' %}desc{% else %}asc{% endif %}"
+                                           class="text-light text-decoration-none">
+                                            #
+                                            {% if sort_by == 'IdUtworu' %}
+                                                {% if order == 'asc' %}
+                                                    ▲
+                                                {% else %}
+                                                    ▼
+                                                {% endif %}
+                                            {% endif %}
                                         </a>
                                     </div>
                                     <div class="col-auto col-sm-4">
-                                        <a href="?sort=Tytul&order={% if sort_by == 'Tytul' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
-                                            Tytuł {% if sort_by == 'Tytul' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        <a href="?sort=Tytul&order={% if sort_by == 'Tytul' and order == 'asc' %}desc{% else %}asc{% endif %}"
+                                           class="text-light text-decoration-none">
+                                            Tytuł
+                                            {% if sort_by == 'Tytul' %}
+                                                {% if order == 'asc' %}
+                                                    ▲
+                                                {% else %}
+                                                    ▼
+                                                {% endif %}
+                                            {% endif %}
                                         </a>
                                     </div>
                                     <div class="col-auto col-sm-4">
-                                        <a href="?sort=Imie&order={% if sort_by == 'Imie' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-light text-decoration-none">
-                                            Artysta {% if sort_by == 'Imie' %}{% if order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        <a href="?sort=Imie&order={% if sort_by == 'Imie' and order == 'asc' %}desc{% else %}asc{% endif %}"
+                                           class="text-light text-decoration-none">
+                                            Artysta
+                                            {% if sort_by == 'Imie' %}
+                                                {% if order == 'asc' %}
+                                                    ▲
+                                                {% else %}
+                                                    ▼
+                                                {% endif %}
+                                            {% endif %}
                                         </a>
                                     </div>
                                 </div>
@@ -63,7 +89,7 @@
         </div>
         <div class="row">
             <div class="col-12 col-sm pt-2">
-                <a href="{{ url_for("dodaj_utwor_view") }}"
+                <a href="{{ url_for("utwory.dodaj_utwor_view") }}"
                    class="btn btn-primary btn-block">Dodaj nowy utwór</a>
             </div>
 

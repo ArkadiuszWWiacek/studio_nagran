@@ -58,38 +58,55 @@ source venv/bin/activate
 ### 4. Zainstaluj zależności
 
 ```bash
-pip install flask sqlalchemy
+pip install -r requirements.txt
 ```
 
 ## Struktura projektu
 
 ```
-studio-nagran/
-├── studio_nagran.py          # Główny plik aplikacji
-├── studio_nagran_01.db       # Baza danych SQLite (tworzona automatycznie)
-├── templates/                 # [DO UZUPEŁNIENIA] Szablony HTML
-│   ├── index.html
-│   ├── artysci.html
-│   ├── dodaj_artyste.html
-│   ├── edytuj_artyste.html
-│   ├── modal_utwory.html
-│   ├── inzynierowie.html
-│   ├── dodaj_inzyniera.html
-│   ├── edytuj_inzyniera.html
-│   ├── sprzet.html
-│   ├── dodaj_sprzet.html
-│   ├── utwory.html
-│   ├── dodaj_utwor.html
-│   ├── sesje.html
-│   ├── dodaj_sesje.html
-│   └── modal_detale.html
-└── static/                    # [DO UZUPEŁNIENIA] Pliki statyczne (CSS, JS)
+studio/
+├── config.py
+├── README.md
+├── requirements.txt
+├── run.py
+├── studio_nagran_01.db
+├── app
+│   ├── static/
+│   │   ├── style.css
+│   │   └── images/
+│   │      └── style.css
+│   ├── templates/
+│   │   ├── artysci.html
+│   │   ├── base.html
+│   │   ├── dodaj_artyste.html
+│   │   ├── dodaj_inzyniera.html
+│   │   ├── dodaj_sesje.html
+│   │   ├── dodaj_sprzet.html
+│   │   ├── dodaj_utwor.html
+│   │   ├── edytuj_artyste.html
+│   │   ├── edytuj_inzyniera.html
+│   │   ├── index.html
+│   │   ├── inzynierowie.html
+│   │   ├── modal_detale.html
+│   │   ├── modal_utwory.html
+│   │   ├── sesje_detale.html
+│   │   ├── sesje.html
+│   │   ├── sprzet.html
+│   │   └── utwory.html
+│   └── views/
+│       ├── artysci.py
+│       ├── inzynierowie.py
+│       ├── sesje.py
+│       ├── sprzet.py
+│       └── utwory.py
+└── tests
+   └── test_app.py
 ```
 
 ## Uruchomienie aplikacji
 
 ```bash
-python studio_nagran.py
+python run.py
 ```
 
 Aplikacja będzie dostępna pod adresem: `http://localhost:5000`
@@ -229,7 +246,7 @@ SOFTWARE.
 
 ## Wsparcie
 
-W przypadku pytań lub problemów, skontaktuj się z autorem projektu.
+W przypadku pytań lub problemów, skontaktuj się z autorem projektu: 
 arkadiusz.wiacek@uth.pl
 
 ---

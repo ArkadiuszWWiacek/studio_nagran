@@ -6,8 +6,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
 sys.path.insert(0, ".")
-from studio_nagran import (
-    app,
+from app import create_app
+from app.models import (
     Artysci,
     Inzynierowie,
     Sprzet,
@@ -16,46 +16,53 @@ from studio_nagran import (
     SprzetySesje,
     Base,
 )
-import studio_nagran
+from app import database
 
 
 @pytest.fixture(scope="function")
 def client() -> FlaskClient:
     """Fixtura klienta testowego z izolowaną bazą danych"""
-    app.config["TESTING"] = True
-    app.config["WTF_CSRF_ENABLED"] = False
+    test_app = create_app()
+    test_app.config["TESTING"] = True
+    test_app.config["WTF_CSRF_ENABLED"] = False
     
-    # Utwórz silnik testowy
-    engine = create_engine("sqlite:///:memory:", echo=False)
-    TestSessionFactory = sessionmaker(bind=engine)
+    test_engine = create_engine("sqlite:///:memory:", echo=False)
+    TestSessionFactory = sessionmaker(bind=test_engine)
     TestSession = scoped_session(TestSessionFactory)
     
-    # Utwórz tabele
-    Base.metadata.create_all(engine)
+    Base.metadata.bind = test_engine
+    Base.metadata.create_all(test_engine)
     
-    # Zastąp globalną sesję
-    original_session = studio_nagran.Session
-    studio_nagran.Session = TestSession
+    original_session = database.Session
+    original_engine = database.engine
+    database.Session = TestSession
+    database.engine = test_engine
     
-    try:
-        with app.test_client() as client:
-            yield client
-    finally:
-        # Cleanup
-        TestSession.remove()
-        Base.metadata.drop_all(engine)
-        engine.dispose()
-        studio_nagran.Session = original_session
+
+    with test_app.test_client() as test_client:
+        with test_app.app_context():
+            try:
+                yield test_client
+            finally:
+                TestSession.remove()
+                Base.metadata.drop_all(test_engine)
+                test_engine.dispose()
+                database.Session = original_session
+                database.engine = original_engine
 
 
 @contextmanager
 def get_session():
-    """Context manager dla sesji bazy danych"""
-    session = studio_nagran.Session()
+    session = database.Session()
     try:
         yield session
+        session.commit()  # ✓ DODANE - commit zmian
+    except Exception:
+        session.rollback()
+        raise
     finally:
         session.close()
+
 
 
 class TestArtysci:
@@ -67,7 +74,7 @@ class TestArtysci:
         expected_title = "Artyści".encode('utf-8')
         
         # Act
-        response = client.get("/artysci")
+        response = client.get("/artysci/")
         
         # Assert
         assert response.status_code == 200
@@ -100,7 +107,7 @@ class TestInzynierowie:
         expected_title = "Inżynierowie".encode('utf-8')
         
         # Act
-        response = client.get("/inzynierowie")
+        response = client.get("/inzynierowie/")
         
         # Assert
         assert response.status_code == 200
@@ -134,7 +141,7 @@ class TestSprzet:
         expected_title = "Sprzęt".encode('utf-8')
         
         # Act
-        response = client.get("/sprzet")
+        response = client.get("/sprzet/")
         
         # Assert
         assert response.status_code == 200
@@ -169,7 +176,7 @@ class TestUtwory:
         expected_title = "Utwory".encode('utf-8')
         
         # Act
-        response = client.get("/utwory")
+        response = client.get("/utwory/")
         
         # Assert
         assert response.status_code == 200
@@ -238,7 +245,7 @@ class TestSesje:
         sort_params = "?sort=IdSesji&order=desc"
         
         # Act
-        response = client.get(f"/sesje{sort_params}")
+        response = client.get(f"/sesje/{sort_params}")
         
         # Assert
         assert response.status_code == 200

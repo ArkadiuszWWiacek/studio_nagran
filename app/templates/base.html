@@ -38,19 +38,20 @@
                             <li class="nav-item">
                                 <a class="nav-link active"
                                    aria-current="page"
-                                   href="{{ url_for("artysci_view") }}">Artyści</a>
+                                   href="{{ url_for("artysci.artysci_view") }}">Artyści</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for("inzynierowie_view") }}">Inżynierowie</a>
+                                <a class="nav-link"
+                                   href="{{ url_for("inzynierowie.inzynierowie_view") }}">Inżynierowie</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for("sprzet_view") }}">Sprzęt</a>
+                                <a class="nav-link" href="{{ url_for("sprzet.sprzet_view") }}">Sprzęt</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for("sesje_view") }}">Sesje</a>
+                                <a class="nav-link" href="{{ url_for("sesje.sesje_view") }}">Sesje</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for("utwory_view") }}">Utwory</a>
+                                <a class="nav-link" href="{{ url_for("utwory.utwory_view") }}">Utwory</a>
                             </li>
                         </ul>
                     </div>
