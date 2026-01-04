@@ -1,0 +1,238 @@
+# Studio Nagrań
+
+Aplikacja webowa do zarządzania studiem nagrań, umożliwiająca rejestrację sesji nagraniowych, artystów, inżynierów dźwięku, sprzętu oraz utworów muzycznych.
+
+## Autor
+
+**Arkadiusz Wiącek - 35027**
+
+## Opis projektu
+
+Studio Nagrań to system zarządzania bazą danych studia nagraniowego zbudowany przy użyciu Flask i SQLAlchemy. Aplikacja umożliwia kompleksowe zarządzanie wszystkimi aspektami działalności studia, w tym:
+
+- Rejestracja i zarządzanie artystami (soliści i zespoły)
+- Zarządzanie inżynierami dźwięku
+- Katalog sprzętu studyjnego (mikrofony, przedwzmacniacze, efekty, itp.)
+- Planowanie i rejestracja sesji nagraniowych
+- Katalog nagranych utworów
+
+## Wymagania systemowe
+
+- Python 3.12.12 lub nowszy
+- SQLite (wbudowane w Python)
+
+## Technologie
+
+- **Backend**: Flask
+- **ORM**: SQLAlchemy (Core 2.0)
+- **Baza danych**: SQLite
+- **Frontend**: HTML (Jinja2 templates)
+
+## Instalacja
+
+### 1. Sklonuj repozytorium
+
+```bash
+git clone <repository-url>
+cd studio-nagran
+```
+
+### 2. Utwórz wirtualne środowisko
+
+```bash
+python -m venv venv
+```
+
+### 3. Aktywuj wirtualne środowisko
+
+**Windows:**
+```bash
+venv\Scripts\activate
+```
+
+**Linux/macOS:**
+```bash
+source venv/bin/activate
+```
+
+### 4. Zainstaluj zależności
+
+```bash
+pip install flask sqlalchemy
+```
+
+## Struktura projektu
+
+```
+studio-nagran/
+├── studio_nagran.py          # Główny plik aplikacji
+├── studio_nagran_01.db       # Baza danych SQLite (tworzona automatycznie)
+├── templates/                 # [DO UZUPEŁNIENIA] Szablony HTML
+│   ├── index.html
+│   ├── artysci.html
+│   ├── dodaj_artyste.html
+│   ├── edytuj_artyste.html
+│   ├── modal_utwory.html
+│   ├── inzynierowie.html
+│   ├── dodaj_inzyniera.html
+│   ├── edytuj_inzyniera.html
+│   ├── sprzet.html
+│   ├── dodaj_sprzet.html
+│   ├── utwory.html
+│   ├── dodaj_utwor.html
+│   ├── sesje.html
+│   ├── dodaj_sesje.html
+│   └── modal_detale.html
+└── static/                    # [DO UZUPEŁNIENIA] Pliki statyczne (CSS, JS)
+```
+
+## Uruchomienie aplikacji
+
+```bash
+python studio_nagran.py
+```
+
+Aplikacja będzie dostępna pod adresem: `http://localhost:5000`
+
+## Model bazy danych
+
+### Tabele
+
+#### Artysci
+- `IdArtysty` (PK) - Identyfikator artysty
+- `Nazwa` - Nazwa artysty/zespołu
+- `Imie` - Imię (dla artystów solowych)
+- `Nazwisko` - Nazwisko (dla artystów solowych)
+
+#### Inzynierowie
+- `IdInzyniera` (PK) - Identyfikator inżyniera
+- `Imie` - Imię inżyniera
+- `Nazwisko` - Nazwisko inżyniera
+
+#### Sprzet
+- `IdSprzetu` (PK) - Identyfikator sprzętu
+- `Producent` - Producent sprzętu
+- `Model` - Model sprzętu
+- `Kategoria` - Kategoria sprzętu (mikrofon, przedwzmacniacz, itp.)
+
+#### Sesje
+- `IdSesji` (PK) - Identyfikator sesji
+- `IdArtysty` (FK) - Powiązanie z artystą
+- `IdInzyniera` (FK) - Powiązanie z inżynierem
+- `TerminStart` - Data i czas rozpoczęcia sesji
+- `TerminStop` - Data i czas zakończenia sesji (opcjonalne)
+
+#### Utwory
+- `IdUtworu` (PK) - Identyfikator utworu
+- `IdArtysty` (FK) - Powiązanie z artystą
+- `IdSesji` (FK) - Powiązanie z sesją
+- `Tytul` - Tytuł utworu
+
+#### SprzetySesje (tabela powiązań)
+- `IdSprzetu` (PK, FK) - Identyfikator sprzętu
+- `IdSesji` (PK, FK) - Identyfikator sesji
+
+### Relacje
+
+- Artysta może mieć wiele sesji i utworów (1:N)
+- Inżynier może prowadzić wiele sesji (1:N)
+- Sesja może wykorzystywać wiele jednostek sprzętu (N:M)
+- Sesja może zawierać wiele utworów (1:N)
+
+## Funkcjonalności
+
+### Zarządzanie artystami
+- **Przeglądanie** (`/artysci`) - lista wszystkich artystów z możliwością sortowania
+- **Dodawanie** (`/artysci/dodaj`) - formularz dodawania nowego artysty
+- **Edycja** (`/artysci/edytuj/<id>`) - formularz edycji danych artysty
+- **Utwory artysty** (`/artysci/<id>`) - lista utworów danego artysty
+
+### Zarządzanie inżynierami
+- **Przeglądanie** (`/inzynierowie`) - lista wszystkich inżynierów z możliwością sortowania
+- **Dodawanie** (`/inzynierowie/dodaj`) - formularz dodawania nowego inżyniera
+- **Edycja** (`/inzynierowie/edytuj/<id>`) - formularz edycji danych inżyniera
+
+### Zarządzanie sprzętem
+- **Przeglądanie** (`/sprzet`) - lista całego sprzętu z możliwością sortowania
+- **Dodawanie** (`/sprzet/dodaj`) - formularz dodawania nowego sprzętu
+
+### Zarządzanie utworami
+- **Przeglądanie** (`/utwory`) - lista wszystkich utworów z danymi artysty i sesji
+- **Dodawanie** (`/utwory/dodaj`) - formularz dodawania nowego utworu
+
+### Zarządzanie sesjami
+- **Przeglądanie** (`/sesje`) - lista wszystkich sesji z możliwością sortowania
+- **Dodawanie** (`/sesje/dodaj`) - formularz dodawania nowej sesji z wyborem sprzętu
+- **Szczegóły sesji** (`/sesje/<id>`) - pełne informacje o sesji, wykorzystanym sprzęcie i utworach
+
+## Sortowanie danych
+
+Wszystkie widoki list obsługują sortowanie poprzez parametry URL:
+- `sort` - kolumna do sortowania
+- `order` - kierunek sortowania (`asc` lub `desc`)
+
+Przykład: `/artysci?sort=Nazwisko&order=desc`
+
+## Konfiguracja
+
+### Baza danych
+
+Domyślnie aplikacja korzysta z bazy SQLite `studio_nagran_01.db`, która jest tworzona automatycznie przy pierwszym uruchomieniu. Połączenie z bazą można zmienić modyfikując linię:
+
+```python
+engine = create_engine("sqlite:///studio_nagran_01.db", echo=True, future=True)
+```
+
+### Tryb debugowania
+
+Aplikacja uruchamia się w trybie debug. W środowisku produkcyjnym zmień:
+
+```python
+app.run(host="0.0.0.0", port=5000, debug=False)
+```
+
+## Planowane funkcjonalności
+
+- [ ] Funkcjonalność usuwania rekordów (artystów, inżynierów, sprzętu, sesji, utworów)
+- [ ] Edycja sesji nagraniowych
+- [ ] Edycja utworów
+- [ ] Edycja sprzętu
+- [ ] Zaawansowane wyszukiwanie i filtrowanie
+
+## Licencja
+
+Ten projekt jest udostępniony na licencji **MIT License**.
+
+### MIT License
+
+```
+Copyright (c) 2026 Arkadiusz Wiącek
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+## Wsparcie
+
+W przypadku pytań lub problemów, skontaktuj się z autorem projektu.
+arkadiusz.wiacek@uth.pl
+
+---
+
+**Wersja**: 1.0.0  
+**Data ostatniej aktualizacji**: 04.01.2026
