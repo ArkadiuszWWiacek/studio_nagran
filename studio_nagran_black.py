@@ -109,9 +109,11 @@ def index():
 def artysci_view():
     sesja = Session()
     try:
+        # Pobierz parametr sortowania z URL
         sort_by = request.args.get("sort", "IdArtysty")
         order = request.args.get("order", "asc")
 
+        # Mapowanie nazw kolumn
         sort_columns = {
             "IdArtysty": Artysci.IdArtysty,
             "Nazwa": Artysci.Nazwa,
@@ -119,9 +121,11 @@ def artysci_view():
             "Nazwisko": Artysci.Nazwisko,
         }
 
+        # Sprawdź czy kolumna istnieje
         if sort_by not in sort_columns:
             sort_by = "IdArtysty"
 
+        # Zastosuj sortowanie
         column = sort_columns[sort_by]
         if order == "desc":
             column = column.desc()
@@ -189,9 +193,11 @@ def utwory_artysty_view(IdArtysty):
 def inzynierowie_view():
     sesja = Session()
     try:
+        # Pobierz parametr sortowania z URL
         sort_by = request.args.get("sort", "IdInzyniera")
         order = request.args.get("order", "asc")
 
+        # Mapowanie nazw kolumn
         sort_columns = {
             "IdInzyniera": Inzynierowie.IdInzyniera,
             "Imie": Inzynierowie.Imie,
@@ -259,9 +265,11 @@ def edytuj_inzyniera_view(IdInzyniera):
 def sprzet_view():
     sesja = Session()
     try:
+        # Pobierz parametr sortowania z URL
         sort_by = request.args.get("sort", "IdSprzetu")
         order = request.args.get("order", "asc")
 
+        # Mapowanie nazw kolumn
         sort_columns = {
             "IdSprzetu": Sprzet.IdSprzetu,
             "Producent": Sprzet.Producent,
@@ -334,6 +342,7 @@ def utwory_view():
                 .all()
             )
         else:
+            # Standardowe sortowanie po kolumnach Utwory
             sort_columns = {"IdUtworu": Utwory.IdUtworu, "Tytul": Utwory.Tytul}
 
             if sort_by not in sort_columns:
@@ -393,9 +402,11 @@ def dodaj_utwor_view():
 def sesje_view():
     sesja = Session()
     try:
+        # Pobierz parametr sortowania z URL
         sort_by = request.args.get("sort", "IdSesji")
         order = request.args.get("order", "asc")
 
+        # Dla sortowania po powiązanych tabelach
         if sort_by in ["NazwaArtysty", "ImieArtysty", "NazwiskoArtysty"]:
             if sort_by == "NazwaArtysty":
                 column = Artysci.Nazwa
@@ -437,6 +448,7 @@ def sesje_view():
                 .all()
             )
         else:
+            # Standardowe sortowanie po kolumnach Sesje
             sort_columns = {"IdSesji": Sesje.IdSesji}
 
             if sort_by not in sort_columns:

@@ -1,16 +1,15 @@
 from flask import Flask, request, redirect, url_for, render_template
-from pprint import pprint
-from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey, select
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import (
     declarative_base,
     relationship,
     sessionmaker,
     joinedload,
-    contains_eager,
 )
 
 engine = create_engine("sqlite:///studio_nagran_01.db", echo=True, future=True)
-Session = sessionmaker(bind=engine)
+SESSION = sessionmaker(bind=engine)
 Base = declarative_base()
 
 
@@ -88,7 +87,7 @@ class SprzetySesje(Base):
 
 def init_db():
     Base.metadata.create_all(bind=engine)
-    sesja = Session()
+    sesja = SESSION()
     try:
         if sesja.query(Artysci).first() is not None:
             return
@@ -107,7 +106,7 @@ def index():
 
 @app.route("/artysci")
 def artysci_view():
-    sesja = Session()
+    sesja = SESSION()
     try:
         sort_by = request.args.get("sort", "IdArtysty")
         order = request.args.get("order", "asc")
@@ -145,7 +144,7 @@ def dodaj_artyste_view():
         nazwa = request.form.get("nazwa")
         imie = request.form.get("imie")
         nazwisko = request.form.get("nazwisko")
-        sesja = Session()
+        sesja = SESSION()
         try:
             nowy_artysta = Artysci(Nazwa=nazwa, Imie=imie, Nazwisko=nazwisko)
             sesja.add(nowy_artysta)
@@ -153,13 +152,13 @@ def dodaj_artyste_view():
         finally:
             sesja.close()
         return redirect(url_for("artysci_view"))
-    else:
-        return render_template("dodaj_artyste.html")
+
+    return render_template("dodaj_artyste.html")
 
 
 @app.route("/artysci/edytuj/<int:IdArtysty>", methods=["GET", "POST"])
 def edytuj_artyste_view(IdArtysty):
-    sesja = Session()
+    sesja = SESSION()
     try:
         artysta = sesja.query(Artysci).filter(Artysci.IdArtysty == IdArtysty).first()
         if request.method == "POST":
@@ -168,15 +167,14 @@ def edytuj_artyste_view(IdArtysty):
             artysta.Nazwisko = request.form.get("nazwisko")
             sesja.commit()
             return redirect(url_for("artysci_view"))
-        else:
-            return render_template("edytuj_artyste.html", artysta=artysta)
+        return render_template("edytuj_artyste.html", artysta=artysta)
     finally:
         sesja.close()
 
 
 @app.route("/artysci/<int:IdArtysty>")
 def utwory_artysty_view(IdArtysty):
-    sesja = Session()
+    sesja = SESSION()
     try:
         utwory_artysty = select(Utwory).where(Utwory.IdArtysty == IdArtysty)
         result = sesja.execute(utwory_artysty).scalars().all()
@@ -187,7 +185,7 @@ def utwory_artysty_view(IdArtysty):
 
 @app.route("/inzynierowie")
 def inzynierowie_view():
-    sesja = Session()
+    sesja = SESSION()
     try:
         sort_by = request.args.get("sort", "IdInzyniera")
         order = request.args.get("order", "asc")
@@ -223,7 +221,7 @@ def dodaj_inzyniera_view():
     if request.method == "POST":
         imie = request.form.get("imie")
         nazwisko = request.form.get("nazwisko")
-        sesja = Session()
+        sesja = SESSION()
         try:
             nowy_inzynier = Inzynierowie(Imie=imie, Nazwisko=nazwisko)
             sesja.add(nowy_inzynier)
@@ -231,13 +229,13 @@ def dodaj_inzyniera_view():
         finally:
             sesja.close()
         return redirect(url_for("inzynierowie_view"))
-    else:
-        return render_template("dodaj_inzyniera.html")
+
+    return render_template("dodaj_inzyniera.html")
 
 
 @app.route("/inzynierowie/edytuj/<int:IdInzyniera>", methods=["GET", "POST"])
 def edytuj_inzyniera_view(IdInzyniera):
-    sesja = Session()
+    sesja = SESSION()
     try:
         inzynier = (
             sesja.query(Inzynierowie)
@@ -249,15 +247,15 @@ def edytuj_inzyniera_view(IdInzyniera):
             inzynier.Nazwisko = request.form.get("nazwisko")
             sesja.commit()
             return redirect(url_for("inzynierowie_view"))
-        else:
-            return render_template("edytuj_inzyniera.html", inzynier=inzynier)
+
+        return render_template("edytuj_inzyniera.html", inzynier=inzynier)
     finally:
         sesja.close()
 
 
 @app.route("/sprzet")
 def sprzet_view():
-    sesja = Session()
+    sesja = SESSION()
     try:
         sort_by = request.args.get("sort", "IdSprzetu")
         order = request.args.get("order", "asc")
@@ -293,7 +291,7 @@ def dodaj_sprzet_view():
         producent = request.form.get("producent")
         model = request.form.get("model")
         kategoria = request.form.get("kategoria")
-        sesja = Session()
+        sesja = SESSION()
         try:
             nowy_sprzet = Sprzet(Producent=producent, Model=model, Kategoria=kategoria)
             sesja.add(nowy_sprzet)
@@ -301,19 +299,17 @@ def dodaj_sprzet_view():
         finally:
             sesja.close()
         return redirect(url_for("sprzet_view"))
-    else:
-        return render_template("dodaj_sprzet.html")
+
+    return render_template("dodaj_sprzet.html")
 
 
 @app.route("/utwory")
 def utwory_view():
-    sesja = Session()
+    sesja = SESSION()
     try:
-        # Pobierz parametr sortowania z URL
         sort_by = request.args.get("sort", "IdUtworu")
         order = request.args.get("order", "asc")
 
-        # Dla sortowania po artyście musimy użyć joina
         if sort_by in ["Imie", "Nazwisko"]:
             if sort_by == "Imie":
                 column = Artysci.Imie
@@ -362,7 +358,7 @@ def utwory_view():
 
 @app.route("/utwory/dodaj", methods=["GET", "POST"])
 def dodaj_utwor_view():
-    sesja = Session()
+    sesja = SESSION()
     if request.method == "POST":
         artysta = request.form.get("artysta")
         idSesji = request.form.get("idSesji")
@@ -374,87 +370,60 @@ def dodaj_utwor_view():
             print(nowy_utwor)
             sesja.add(nowy_utwor)
             sesja.commit()
-        except Exception as e:
+        except IntegrityError as e:
             sesja.rollback()
             print(f"Błąd podczas dodawania sesji: {e}")
         finally:
             sesja.close()
         return redirect(url_for("utwory_view"))
-    else:
-        try:
-            artysci = sesja.query(Artysci).order_by(Artysci.Nazwa).all()
-            sesje = sesja.query(Sesje).order_by(Sesje.IdSesji).all()
-            return render_template("dodaj_utwor.html", artysci=artysci, sesje=sesje)
-        finally:
-            sesja.close()
+
+    try:
+        artysci = sesja.query(Artysci).order_by(Artysci.Nazwa).all()
+        sesje = sesja.query(Sesje).order_by(Sesje.IdSesji).all()
+        return render_template("dodaj_utwor.html", artysci=artysci, sesje=sesje)
+    finally:
+        sesja.close()
 
 
 @app.route("/sesje")
 def sesje_view():
-    sesja = Session()
+    sesja = SESSION()
     try:
         sort_by = request.args.get("sort", "IdSesji")
         order = request.args.get("order", "asc")
 
-        if sort_by in ["NazwaArtysty", "ImieArtysty", "NazwiskoArtysty"]:
-            if sort_by == "NazwaArtysty":
-                column = Artysci.Nazwa
-            elif sort_by == "ImieArtysty":
-                column = Artysci.Imie
-            else:
-                column = Artysci.Nazwisko
+        # mapowanie aliasów z requestu na faktyczne kolumny
+        sort_map = {
+            "IdSesji": Sesje.IdSesji,
+            "NazwaArtysty": Artysci.Nazwa,
+            "ImieArtysty": Artysci.Imie,
+            "NazwiskoArtysty": Artysci.Nazwisko,
+            "ImieInzyniera": Inzynierowie.Imie,
+            "NazwiskoInzyniera": Inzynierowie.Nazwisko,
+        }
 
-            if order == "desc":
-                column = column.desc()
-            else:
-                column = column.asc()
+        column = sort_map.get(sort_by, Sesje.IdSesji)
 
-            sesje_list = (
-                sesja.query(Sesje)
-                .join(Artysci)
-                .options(joinedload(Sesje.artysci))
-                .options(joinedload(Sesje.inzynierowie))
-                .order_by(column)
-                .all()
-            )
-        elif sort_by in ["ImieInzyniera", "NazwiskoInzyniera"]:
-            if sort_by == "ImieInzyniera":
-                column = Inzynierowie.Imie
-            else:
-                column = Inzynierowie.Nazwisko
-
-            if order == "desc":
-                column = column.desc()
-            else:
-                column = column.asc()
-
-            sesje_list = (
-                sesja.query(Sesje)
-                .join(Inzynierowie)
-                .options(joinedload(Sesje.artysci))
-                .options(joinedload(Sesje.inzynierowie))
-                .order_by(column)
-                .all()
-            )
+        # kierunek sortowania
+        if order == "desc":
+            order_clause = column.desc()
         else:
-            sort_columns = {"IdSesji": Sesje.IdSesji}
+            order_clause = column.asc()
 
-            if sort_by not in sort_columns:
-                sort_by = "IdSesji"
+        # bazowe zapytanie
+        query = (
+            sesja.query(Sesje)
+            .options(joinedload(Sesje.artysci))
+            .options(joinedload(Sesje.inzynierowie))
+        )
 
-            column = sort_columns[sort_by]
-            if order == "desc":
-                column = column.desc()
-            else:
-                column = column.asc()
+        # dołącz odpowiednią tabelę tylko jeśli trzeba
+        if sort_by in ["NazwaArtysty", "ImieArtysty", "NazwiskoArtysty"]:
+            query = query.join(Artysci)
+        elif sort_by in ["ImieInzyniera", "NazwiskoInzyniera"]:
+            query = query.join(Inzynierowie)
 
-            sesje_list = (
-                sesja.query(Sesje)
-                .options(joinedload(Sesje.artysci))
-                .options(joinedload(Sesje.inzynierowie))
-                .order_by(column)
-                .all()
-            )
+        sesje_list = query.order_by(order_clause).all()
 
         return render_template(
             "sesje.html", sesje=sesje_list, sort_by=sort_by, order=order
@@ -465,7 +434,7 @@ def sesje_view():
 
 @app.route("/sesje/<int:IdSesji>")
 def sesja_details_view(IdSesji):
-    sesja = Session()
+    sesja = SESSION()
     try:
         sesja_details = (
             select(Sesje)
@@ -484,7 +453,7 @@ def sesja_details_view(IdSesji):
 
 @app.route("/sesje/dodaj", methods=["GET", "POST"])
 def dodaj_sesje_view():
-    sesja = Session()
+    sesja = SESSION()
     if request.method == "POST":
         id_artysty = request.form.get("artysta")
         id_inzyniera = request.form.get("inzynier")
@@ -508,27 +477,25 @@ def dodaj_sesje_view():
                 )
                 sesja.add(powiazanie)
             sesja.commit()
-        except Exception as e:
+        except IntegrityError as e:
             sesja.rollback()
             print(f"Błąd podczas dodawania sesji: {e}")
         finally:
             sesja.close()
         return redirect(url_for("sesje_view"))
-    else:
-        try:
-            artysci = sesja.query(Artysci).order_by(Artysci.Nazwa).all()
-            inzynierowie = (
-                sesja.query(Inzynierowie).order_by(Inzynierowie.Nazwisko).all()
-            )
-            sprzety = sesja.query(Sprzet).order_by(Sprzet.Kategoria, Sprzet.Model).all()
-            return render_template(
-                "dodaj_sesje.html",
-                artysci=artysci,
-                inzynierowie=inzynierowie,
-                sprzety=sprzety,
-            )
-        finally:
-            sesja.close()
+
+    try:
+        artysci = sesja.query(Artysci).order_by(Artysci.Nazwa).all()
+        inzynierowie = sesja.query(Inzynierowie).order_by(Inzynierowie.Nazwisko).all()
+        sprzety = sesja.query(Sprzet).order_by(Sprzet.Kategoria, Sprzet.Model).all()
+        return render_template(
+            "dodaj_sesje.html",
+            artysci=artysci,
+            inzynierowie=inzynierowie,
+            sprzety=sprzety,
+        )
+    finally:
+        sesja.close()
 
 
 if __name__ == "__main__":
