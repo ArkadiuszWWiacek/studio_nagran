@@ -56,7 +56,7 @@ def get_session():
     session = database.Session()
     try:
         yield session
-        session.commit()  # ✓ DODANE - commit zmian
+        session.commit()
     except Exception:
         session.rollback()
         raise
@@ -197,25 +197,21 @@ class TestUtwory:
     def test_dodaj_utwor_post_success(self, client: FlaskClient):
         """Test integracyjny POST /utwory/dodaj z poprawnymi danymi"""
         # Arrange
-        # Przygotowanie artysty i inżyniera
         client.post("/artysci/dodaj", data={"nazwa": "TestArtist2", "imie": "Jan", "nazwisko": "Kowalski"})
         client.post("/inzynierowie/dodaj", data={"imie": "Adam", "nazwisko": "Nowak"})
-        
-        # Pobranie ID z bazy
+
         with get_session() as session:
             artist = session.query(Artysci).filter(Artysci.Nazwa == "TestArtist2").first()
             engineer = session.query(Inzynierowie).filter(Inzynierowie.Imie == "Adam").first()
             artist_id = artist.IdArtysty
             engineer_id = engineer.IdInzyniera
-        
-        # Przygotowanie sesji
+
         client.post("/sesje/dodaj", data={
             "artysta": str(artist_id),
             "inzynier": str(engineer_id),
             "termin_start": "2025-01-01"
         })
-        
-        # Pobranie ID sesji
+
         with get_session() as session:
             sesja = session.query(Sesje).first()
             sesja_id = sesja.IdSesji
@@ -254,13 +250,11 @@ class TestSesje:
     def test_dodaj_sesje_post_multiple_sprzet(self, client: FlaskClient):
         """Test integracyjny dodawania sesji z wieloma sprzętami"""
         # Arrange
-        # Przygotowanie danych testowych
         client.post("/artysci/dodaj", data={"nazwa": "TestArtist3"})
         client.post("/inzynierowie/dodaj", data={"imie": "Jan", "nazwisko": "Test"})
         client.post("/sprzet/dodaj", data={"producent": "P1", "model": "M1", "kategoria": "K1"})
         client.post("/sprzet/dodaj", data={"producent": "P2", "model": "M2", "kategoria": "K2"})
-        
-        # Pobranie ID z bazy
+
         with get_session() as session:
             artist = session.query(Artysci).filter(Artysci.Nazwa == "TestArtist3").first()
             engineer = session.query(Inzynierowie).filter(

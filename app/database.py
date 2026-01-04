@@ -9,7 +9,6 @@ def init_db():
     Base.metadata.create_all(bind=engine)
     sesja = Session()
     try:
-        # Sprawdzenie czy baza już istnieje
         from app.models import Artysci
         if sesja.query(Artysci).first() is not None:
             return
