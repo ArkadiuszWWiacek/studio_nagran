@@ -238,3 +238,41 @@ def simple_monkeypatch_fixtures(client, monkeypatch):
         client=client,
         monkeypatch=monkeypatch
     )
+
+@pytest.fixture
+def mock_db_seed(monkeypatch):
+    class MockConnection:
+        executescript_called = commit_called = close_called = False
+
+        def executescript(self, sql): # pylint: disable=W0613
+            self.executescript_called = True
+
+        def commit(self):
+            self.commit_called = True
+
+        def close(self):
+            self.close_called = True
+
+    class MockFile:
+        read_called = False
+
+        def read(self):
+            self.read_called = True
+            return "-- seed SQL content"
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc_val, exc_tb): # pylint: disable=W0613
+            pass
+
+    mock_conn = MockConnection()
+    mock_file = MockFile()
+
+    def mock_open(filename, mode=None, encoding=None): # pylint: disable=W0613
+        return mock_file
+
+    monkeypatch.setattr('sqlite3.connect', lambda db: mock_conn)
+    monkeypatch.setattr('builtins.open', mock_open)
+
+    yield mock_conn, mock_file

@@ -66,11 +66,18 @@ pip install -r requirements.txt
 ```
 studio/
 ├── config.py
+├── pytest.ini
 ├── README.md
 ├── requirements.txt
 ├── run.py
-├── studio_nagran_01.db
+├── seed_data.sql
+├── studio_nagran.db
 ├── app
+│   ├── __init__.py
+│   ├── blueprints.py
+│   ├── database.py
+│   ├── models.py
+│   ├── services.py
 │   ├── static/
 │   │   ├── style.css
 │   │   └── images/
@@ -85,6 +92,7 @@ studio/
 │   │   ├── dodaj_utwor.html
 │   │   ├── edytuj_artyste.html
 │   │   ├── edytuj_inzyniera.html
+│   │   ├── edytuj_sesje.html
 │   │   ├── index.html
 │   │   ├── inzynierowie.html
 │   │   ├── modal_detale.html
@@ -94,13 +102,19 @@ studio/
 │   │   ├── sprzet.html
 │   │   └── utwory.html
 │   └── views/
+│       ├── __init__.py
 │       ├── artysci.py
 │       ├── inzynierowie.py
 │       ├── sesje.py
 │       ├── sprzet.py
 │       └── utwory.py
 └── tests
-   └── test_app.py
+   ├── __init__.py
+   ├── conftest.py
+   ├── test_blueprints.py
+   ├── test_database.py
+   ├── test_services.py
+   └── test_types.py
 ```
 
 ## Uruchomienie aplikacji
@@ -194,10 +208,15 @@ Przykład: `/artysci?sort=Nazwisko&order=desc`
 
 ### Baza danych
 
-Domyślnie aplikacja korzysta z bazy SQLite `studio_nagran_01.db`, która jest tworzona automatycznie przy pierwszym uruchomieniu. Połączenie z bazą można zmienić modyfikując linię:
+Domyślnie aplikacja korzysta z bazy SQLite `studio_nagran.db`, która jest tworzona automatycznie przy pierwszym uruchomieniu. Połączenie z bazą można zmienić modyfikując linię:
 
 ```python
-engine = create_engine("sqlite:///studio_nagran_01.db", echo=True, future=True)
+engine = create_engine("sqlite:///studio_nagran.db", echo=True, future=True)
+```
+
+### Inicjalizacja danych przykładowych
+```bash
+flask seed
 ```
 
 ### Tryb debugowania
@@ -207,6 +226,35 @@ Aplikacja uruchamia się w trybie debug. W środowisku produkcyjnym zmień:
 ```python
 app.run(host="0.0.0.0", port=5000, debug=False)
 ```
+
+## Testy i narzędzia
+### Testy
+**Jednostkowe** (services: sortowanie, CRUD, rollback błędów) i **integracyjne/end-to-end** (blueprints: GET/POST endpointy, redirecty, 404, monkeypatch symulacja błędów)
+```bash
+pytest tests/ -v --cov=app --cov-report=term-missing
+```
+
+### Narzędzia
+```bash
+pylint ./
+```
+
+### Skrypt do uruchamiania testów
+Linux / MacOS
+```bash
+./run_tests.sh
+```
+
+Windows
+```bash
+./run_tests.bat
+```
+
+## Użycie AI
+**Perplexity AI** (różne modele) zastosowano do:
+- generowanie/aktualizacja testów
+- debugowanie
+- wyjaśnianie struktur (ORM relacje, fixtures pytest)
 
 ## Planowane funkcjonalności
 

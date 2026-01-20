@@ -1,0 +1,18 @@
+@echo off
+setlocal enabledelayedexpansion
+
+echo Uruchamianie testów pytest...
+pytest tests/ -v --cov=app --cov-report=term-missing
+if %errorlevel% neq 0 (
+    echo Pytest nieudany!
+    exit /b 1
+)
+
+echo Uruchamianie pylint...
+pylint ./
+if %errorlevel% neq 0 (
+    echo Pylint nieudany!
+    exit /b 2
+)
+
+echo Wszystko OK!

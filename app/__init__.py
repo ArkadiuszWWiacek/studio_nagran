@@ -5,6 +5,14 @@ import click
 from app import database
 from app.blueprints import register_blueprints
 
+def seed_database():
+    conn = sqlite3.connect('studio_nagran.db')
+    with open('seed_data.sql', 'r', encoding='utf-8') as f:
+        sql_script = f.read()
+        conn.executescript(sql_script)
+    conn.commit()
+    conn.close()
+    click.echo('Baza zaseedowana!')
 
 def create_app():
     app = Flask(__name__)
@@ -13,16 +21,7 @@ def create_app():
 
     @app.cli.command("seed")
     def seed_db():
-        """Zaseeduj bazę danych."""
-
-        conn = sqlite3.connect('studio_nagran.db')
-        with open('seed_data.sql', 'r', encoding='utf-8') as f:
-            sql_script = f.read()
-            conn.executescript(sql_script)
-
-        conn.commit()
-        conn.close()
-        click.echo('Baza zaseedowana!')
+        seed_database()
 
     @app.route("/")
     def index():
