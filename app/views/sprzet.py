@@ -12,7 +12,7 @@ def sprzet_view():
     order = request.args.get("order", "asc")
 
     sprzety = get_all_sorted(Sprzet, sortby, order)
-    return render_template("sprzet.html", sprzety=sprzety, sortby=sortby, order=order)
+    return render_template("sprzet.html", sprzety=sprzety, sort_by=sortby, order=order)
 
 
 @sprzet_bp.route("/dodaj", methods=["GET", "POST"])

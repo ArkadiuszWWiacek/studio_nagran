@@ -17,7 +17,7 @@ def sesje_view():
     order = request.args.get("order", "asc")
 
     sesje = get_sessions_sorted(sortby=sortby, order=order)
-    return render_template("sesje.html", sesje=sesje, sortby=sortby, order=order)
+    return render_template("sesje.html", sesje=sesje, sort_by=sortby, order=order)
 
 
 @sesje_bp.route("/<int:idsesji>")

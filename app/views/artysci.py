@@ -14,7 +14,7 @@ def artysci_view():
 
     artysci = get_all_sorted(Artysci, sortby, order)
 
-    return render_template("artysci.html", artysci=artysci, sortby=sortby, order=order)
+    return render_template("artysci.html", artysci=artysci, sort_by=sortby, order=order)
 
 
 @artysci_bp.route("/dodaj", methods=["GET", "POST"])

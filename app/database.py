@@ -3,7 +3,7 @@ from flask import Flask
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-engine = create_engine("sqlite:///studio_nagran_01.db", echo=True, future=True)
+engine = create_engine("sqlite:///studio_nagran.db", echo=True, future=True)
 session = sessionmaker(bind=engine, expire_on_commit=False)
 base = declarative_base()
 

@@ -13,7 +13,7 @@ def inzynierowie_view():
     order = request.args.get("order", "asc")
 
     inzynierowie = get_all_sorted(Inzynierowie, sortby, order)
-    context = {"inzynierowie": inzynierowie, "sortby": sortby, "order": order}
+    context = {"inzynierowie": inzynierowie, "sort_by": sortby, "order": order}
     return render_template("inzynierowie.html", **context)
 
 

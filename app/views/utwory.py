@@ -14,7 +14,7 @@ def utwory_view():
 
     utwory = get_utwory_sorted(sortby=sortby, order=order)
 
-    return render_template("utwory.html", utwory=utwory, sortby=sortby, order=order)
+    return render_template("utwory.html", utwory=utwory, sort_by=sortby, order=order)
 
 
 @utwory_bp.route("/dodaj", methods=["GET", "POST"])

@@ -138,6 +138,6 @@ GitHub.sublime-settings
 .history
 
 raport*
-test_app copy.py
+export_seed.py
 htmlcov/
-studio_nagran_01.db
+studio_nagran.db
