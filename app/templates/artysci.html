@@ -71,8 +71,7 @@
                     </thead>
 
                     {% for artysta in artysci %}
-                        <tr data-bs-toggle="modal"
-                            data-bs-target="#artistModal"
+                        <tr data-bs-target="#artistModal"
                             data-artist-id="{{ artysta.IdArtysty }}"
                             data-artist-name="{{ artysta.Nazwa }}">
                             <td>
@@ -140,31 +139,37 @@
 {% block scripts %}
     <script>
 
-        const artistModal = document.getElementById('artistModal');
-
-        artistModal.addEventListener('show.bs.modal', async function (event) {
-            const row = event.relatedTarget;
-            const artistId = row.getAttribute('data-artist-id');
-            const artistName = row.getAttribute('data-artist-name');
-
-            const modalBody = artistModal.querySelector('.modal-body');
-            const modalLabel = artistModal.querySelector('.modal-title');
-            modalBody.innerHTML = "Ładowanie...";
-
-            try {
+        document.querySelectorAll('tr[data-artist-id]').forEach(row => {
+            row.style.cursor = 'pointer';
+            row.addEventListener('click', async (e) => {
+                // Skip jeśli kliknięto link Edytuj
+                if (e.target.closest('a[href*="edytujartyste"]')) return;
+                
+                const artistId = row.dataset.artistId;
+                const artistName = row.dataset.artistName;
+                
+                const artistModal = document.getElementById('artistModal');
+                const modalBody = artistModal.querySelector('.modal-body');
+                const modalLabel = artistModal.querySelector('.modal-title');
+                
+                modalBody.innerHTML = "Ładowanie...";
+                modalLabel.innerHTML = `<span class="text-primary">Artysta:</span> ${artistName}`;
+                
+                try {
                 const response = await fetch(`/artysci/utwory/${artistId}`);
                 if (!response.ok) {
                     modalBody.textContent = "Błąd ładowania danych.";
                     return;
                 }
                 const html = await response.text();
-                modalLabel.innerHTML = `<span class="text-primary">Artysta:</span> ${artistName}`;
                 modalBody.innerHTML = html;
-            } catch (error) {
+                } catch (error) {
                 modalBody.textContent = "Błąd sieci.";
-            }
+                }
+                
+                new bootstrap.Modal(artistModal).show();
+            });
         });
-
 
     </script>
 {% endblock scripts %}
