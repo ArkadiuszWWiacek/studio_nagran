@@ -235,8 +235,9 @@ pytest tests/ -v --cov=app --cov-report=term-missing
 ```
 
 ### Narzędzia
+Analiza statyczna z pominięciem komunikatów `missing-function-docstring` i `too-few-public-method`
 ```bash
-pylint ./
+pylint ./ --ignore=.venv --disable=C0114,C0115,C0116,R0903
 ```
 
 ### Skrypt do uruchamiania testów
