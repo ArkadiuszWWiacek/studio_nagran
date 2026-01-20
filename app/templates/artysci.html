@@ -152,7 +152,7 @@
             modalBody.innerHTML = "Ładowanie...";
 
             try {
-                const response = await fetch(`/artysci/${artistId}`);
+                const response = await fetch(`/artysci/utwory/${artistId}`);
                 if (!response.ok) {
                     modalBody.textContent = "Błąd ładowania danych.";
                     return;

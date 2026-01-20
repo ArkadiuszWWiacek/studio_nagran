@@ -139,3 +139,5 @@ GitHub.sublime-settings
 
 raport*
 test_app copy.py
+htmlcov/
+studio_nagran_01.db

@@ -1,55 +1,29 @@
-from flask import Blueprint, request, redirect, url_for, render_template
-from app import database
-from app.models import Sprzet
+from flask import Blueprint, redirect, render_template, request, url_for
 
-sprzet_bp = Blueprint('sprzet', __name__)
+from app.models import Sprzet
+from app.services import create_record, get_all_sorted
+
+sprzet_bp = Blueprint("sprzet", __name__)
 
 
 @sprzet_bp.route("/")
 def sprzet_view():
-    sesja = database.Session()
-    try:
-        sort_by = request.args.get("sort", "IdSprzetu")
-        order = request.args.get("order", "asc")
+    sortby = request.args.get("sort", "IdSprzetu")
+    order = request.args.get("order", "asc")
 
-        sort_columns = {
-            "IdSprzetu": Sprzet.IdSprzetu,
-            "Producent": Sprzet.Producent,
-            "Model": Sprzet.Model,
-            "Kategoria": Sprzet.Kategoria,
-        }
-
-        if sort_by not in sort_columns:
-            sort_by = "IdSprzetu"
-
-        column = sort_columns[sort_by]
-        if order == "desc":
-            column = column.desc()
-        else:
-            column = column.asc()
-
-        sprzety = sesja.query(Sprzet).order_by(column).all()
-
-        return render_template(
-            "sprzet.html", sprzety=sprzety, sort_by=sort_by, order=order
-        )
-    finally:
-        sesja.close()
+    sprzety = get_all_sorted(Sprzet, sortby, order)
+    return render_template("sprzet.html", sprzety=sprzety, sortby=sortby, order=order)
 
 
 @sprzet_bp.route("/dodaj", methods=["GET", "POST"])
 def dodaj_sprzet_view():
     if request.method == "POST":
-        producent = request.form.get("producent")
-        model = request.form.get("model")
-        kategoria = request.form.get("kategoria")
-        sesja = database.Session()
-        try:
-            nowy_sprzet = Sprzet(Producent=producent, Model=model, Kategoria=kategoria)
-            sesja.add(nowy_sprzet)
-            sesja.commit()
-        finally:
-            sesja.close()
+        create_record(
+            Sprzet,
+            Producent=request.form.get("producent"),
+            Model=request.form.get("model"),
+            Kategoria=request.form.get("kategoria"),
+        )
         return redirect(url_for("sprzet.sprzet_view"))
 
     return render_template("dodaj_sprzet.html")

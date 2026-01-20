@@ -1,8 +1,10 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
-from app.database import Base
 
-class Artysci(Base):
+from app.database import base
+
+
+class Artysci(base):
     __tablename__ = "artysci"
     IdArtysty = Column(Integer, primary_key=True)
     Nazwa = Column(String)
@@ -16,7 +18,7 @@ class Artysci(Base):
     )
 
 
-class Inzynierowie(Base):
+class Inzynierowie(base):
     __tablename__ = "inzynierowie"
     IdInzyniera = Column(Integer, primary_key=True)
     Imie = Column(String)
@@ -26,7 +28,7 @@ class Inzynierowie(Base):
     )
 
 
-class Sprzet(Base):
+class Sprzet(base):
     __tablename__ = "sprzet"
     IdSprzetu = Column(Integer, primary_key=True)
     Producent = Column(String)
@@ -37,7 +39,7 @@ class Sprzet(Base):
     )
 
 
-class Utwory(Base):
+class Utwory(base):
     __tablename__ = "utwory"
     IdUtworu = Column(Integer, primary_key=True)
     IdArtysty = Column(Integer, ForeignKey("artysci.IdArtysty", ondelete="CASCADE"))
@@ -47,7 +49,7 @@ class Utwory(Base):
     sesje = relationship("Sesje", back_populates="utwory")
 
 
-class Sesje(Base):
+class Sesje(base):
     __tablename__ = "sesje"
     IdSesji = Column(Integer, primary_key=True)
     IdArtysty = Column(Integer, ForeignKey("artysci.IdArtysty", ondelete="CASCADE"))
@@ -62,7 +64,7 @@ class Sesje(Base):
     sprzety_sesje = relationship("SprzetySesje", back_populates="sesje")
 
 
-class SprzetySesje(Base):
+class SprzetySesje(base):
     __tablename__ = "sprzety_sesje"
     IdSprzetu = Column(
         Integer, ForeignKey("sprzet.IdSprzetu", ondelete="CASCADE"), primary_key=True

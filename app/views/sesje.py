@@ -1,150 +1,110 @@
-from sqlite3 import IntegrityError
-from flask import Blueprint, request, redirect, url_for, render_template
-from sqlalchemy import select
-from sqlalchemy.orm import joinedload
-from app import database
-from app.models import Sesje, Artysci, Inzynierowie, Sprzet, SprzetySesje
+import datetime
+
+from flask import Blueprint, redirect, render_template, request, url_for
+
+from app.models import Artysci, Inzynierowie, Sesje, Sprzet, SprzetySesje
+from app.services import (SessionData, create_session_with_equipment,
+                          get_all_sorted, get_by_id, get_db_session,
+                          get_session_details, get_sessions_sorted,
+                          update_session_with_equipment)
 
 sesje_bp = Blueprint("sesje", __name__)
 
 
 @sesje_bp.route("/")
 def sesje_view():
-    sesja = database.Session()
-    try:
-        sort_by = request.args.get("sort", "IdSesji")
-        order = request.args.get("order", "asc")
+    sortby = request.args.get("sort", "IdSesji")
+    order = request.args.get("order", "asc")
 
-        if sort_by in ["NazwaArtysty", "ImieArtysty", "NazwiskoArtysty"]:
-            if sort_by == "NazwaArtysty":
-                column = Artysci.Nazwa
-            elif sort_by == "ImieArtysty":
-                column = Artysci.Imie
-            else:
-                column = Artysci.Nazwisko
-
-            if order == "desc":
-                column = column.desc()
-            else:
-                column = column.asc()
-
-            sesje_list = (
-                sesja.query(Sesje)
-                .join(Artysci)
-                .options(joinedload(Sesje.artysci))
-                .options(joinedload(Sesje.inzynierowie))
-                .order_by(column)
-                .all()
-            )
-        elif sort_by in ["ImieInzyniera", "NazwiskoInzyniera"]:
-            if sort_by == "ImieInzyniera":
-                column = Inzynierowie.Imie
-            else:
-                column = Inzynierowie.Nazwisko
-
-            if order == "desc":
-                column = column.desc()
-            else:
-                column = column.asc()
-
-            sesje_list = (
-                sesja.query(Sesje)
-                .join(Inzynierowie)
-                .options(joinedload(Sesje.artysci))
-                .options(joinedload(Sesje.inzynierowie))
-                .order_by(column)
-                .all()
-            )
-        else:
-            sort_columns = {"IdSesji": Sesje.IdSesji}
-
-            if sort_by not in sort_columns:
-                sort_by = "IdSesji"
-
-            column = sort_columns[sort_by]
-            if order == "desc":
-                column = column.desc()
-            else:
-                column = column.asc()
-
-            sesje_list = (
-                sesja.query(Sesje)
-                .options(joinedload(Sesje.artysci))
-                .options(joinedload(Sesje.inzynierowie))
-                .order_by(column)
-                .all()
-            )
-
-        return render_template(
-            "sesje.html", sesje=sesje_list, sort_by=sort_by, order=order
-        )
-    finally:
-        sesja.close()
+    sesje = get_sessions_sorted(sortby=sortby, order=order)
+    return render_template("sesje.html", sesje=sesje, sortby=sortby, order=order)
 
 
-@sesje_bp.route("/<int:id_sesji>")
-def sesja_details_view(id_sesji):
-    sesja = database.Session()
-    try:
-        sesja_details = (
-            select(Sesje)
-            .options(joinedload(Sesje.artysci))
-            .options(joinedload(Sesje.inzynierowie))
-            .options(joinedload(Sesje.utwory))
-            .options(joinedload(Sesje.sprzety_sesje).joinedload(SprzetySesje.sprzet))
-            .where(Sesje.IdSesji == id_sesji)
-        )
-        wynik_zapytania = sesja.execute(sesja_details)
-        rezultat = wynik_zapytania.scalars().first()
-        return render_template("modal_detale.html", sesja_details=rezultat)
-    finally:
-        sesja.close()
+@sesje_bp.route("/<int:idsesji>")
+def sesja_details_view(idsesji: int):
+    sesja_details = get_session_details(idsesji)
+    return render_template("modal_detale.html", sesja_details=sesja_details)
 
 
 @sesje_bp.route("/dodaj", methods=["GET", "POST"])
 def dodaj_sesje_view():
-    sesja = database.Session()
     if request.method == "POST":
-        id_artysty = request.form.get("artysta")
-        id_inzyniera = request.form.get("inzynier")
-        termin_start = request.form.get("termin_start")
-        termin_stop = request.form.get("termin_stop")
-        if termin_stop == "" or not termin_stop:
-            termin_stop = None
-        wybrane_sprzety_ids = request.form.getlist("sprzet")
-        try:
-            nowa_sesja_nagraniowa = Sesje(
-                IdArtysty=id_artysty,
-                IdInzyniera=id_inzyniera,
-                TerminStart=termin_start,
-                TerminStop=termin_stop,
-            )
-            sesja.add(nowa_sesja_nagraniowa)
-            sesja.flush()
-            for id_sprzetu in wybrane_sprzety_ids:
-                powiazanie = SprzetySesje(
-                    IdSprzetu=int(id_sprzetu), IdSesji=nowa_sesja_nagraniowa.IdSesji
-                )
-                sesja.add(powiazanie)
-            sesja.commit()
-        except (ValueError, IntegrityError) as e:
-            sesja.rollback()
-            print(f"Błąd podczas dodawania sesji nagraniowej: {e}")
-        finally:
-            sesja.close()
+        idartysty = int(request.form.get("artysta"))
+        idinzyniera = int(request.form.get("inzynier"))
+        terminstart_str = request.form.get("termin_start")
+        terminstop_str = request.form.get("termin_stop") or None
+        sprzet_ids = [int(x) for x in request.form.getlist("sprzet")]
+
+        terminstart = datetime.datetime.strptime(terminstart_str, '%Y-%m-%d')
+        terminstop = datetime.datetime.strptime(
+            terminstop_str,
+            '%Y-%m-%d'
+        ) if terminstop_str else None
+
+        session_data = SessionData(
+            idartysty=idartysty,
+            idinzyniera=idinzyniera,
+            terminstart=terminstart,
+            terminstop=terminstop,
+            sprzet_ids=sprzet_ids,
+        )
+
+        create_session_with_equipment(session_data)
         return redirect(url_for("sesje.sesje_view"))
 
-    try:
-        artysci = sesja.query(Artysci).order_by(Artysci.Nazwa).all()
-        inzynierowie = (
-            sesja.query(Inzynierowie).order_by(Inzynierowie.Nazwisko).all()
+    artysci = get_all_sorted(Artysci, "Nazwa", "asc")
+    inzynierowie = get_all_sorted(Inzynierowie, "Nazwisko", "asc")
+    sprzety = get_all_sorted(Sprzet, "Kategoria", "asc")
+    context = {"artysci": artysci, "inzynierowie": inzynierowie, "sprzety": sprzety}
+    return render_template("dodaj_sesje.html", **context)
+
+@sesje_bp.route("/edytuj/<int:idsesji>", methods=["GET", "POST"])
+def edytuj_sesje_view(idsesji: int):
+    sesja = get_by_id(Sesje, idsesji)
+    if sesja is None:
+        return ("Not Found", 404)
+
+    if request.method == "POST":
+        terminstart_str = request.form.get('termin_start')
+        terminstop_str = request.form.get('termin_stop')
+
+        terminstart = datetime.datetime.strptime(terminstart_str, '%Y-%m-%d')
+        terminstop = datetime.datetime.strptime(
+            terminstop_str,
+            '%Y-%m-%d'
+        ) if terminstop_str else None
+
+        session_data = SessionData(
+            idartysty=int(request.form['artysta']),
+            idinzyniera=int(request.form['inzynier']),
+            terminstart=terminstart,
+            terminstop=terminstop,
+            sprzet_ids=[int(id) for id in request.form.getlist('sprzet')]
         )
-        sprzety = sesja.query(Sprzet).order_by(Sprzet.Kategoria, Sprzet.Model).all()
-        return render_template(
-            "dodaj_sesje.html",
-            artysci=artysci,
-            inzynierowie=inzynierowie,
-            sprzety=sprzety,
-        )
-    finally:
-        sesja.close()
+
+        updated = update_session_with_equipment(idsesji, session_data)
+
+        if updated is None:
+            return ("Not Found", 404)
+
+        return redirect(url_for("sesje.sesje_view"))
+
+    # GET: dane do selectów + zaznaczone checkboxy
+    artysci = get_all_sorted(Artysci, "Nazwa", "asc")
+    inzynierowie = get_all_sorted(Inzynierowie, "Nazwisko", "asc")
+    sprzety = get_all_sorted(Sprzet, "Kategoria", "asc")
+
+    with get_db_session() as session:
+        selected_sprzet_ids = [
+            row.IdSprzetu
+            for row in session.query(SprzetySesje).filter_by(IdSesji=idsesji).all()
+        ]
+
+    context = {
+        "sesja": sesja,
+        "artysci": artysci,
+        "inzynierowie": inzynierowie,
+        "sprzety": sprzety,
+        "selected_sprzet_ids": selected_sprzet_ids,
+    }
+    return render_template("edytuj_sesje.html", **context)
