@@ -33,7 +33,7 @@ Studio Nagrań to system zarządzania bazą danych studia nagraniowego zbudowany
 ### 1. Sklonuj repozytorium
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/ArkadiuszWWiacek/studio_nagran
 cd studio-nagran
 ```
 
