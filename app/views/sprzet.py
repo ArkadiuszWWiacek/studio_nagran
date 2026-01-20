@@ -51,5 +51,5 @@ def dodaj_sprzet_view():
         finally:
             sesja.close()
         return redirect(url_for("sprzet.sprzet_view"))
-    else:
-        return render_template("dodaj_sprzet.html")
+
+    return render_template("dodaj_sprzet.html")

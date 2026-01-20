@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from flask import Blueprint, request, redirect, url_for, render_template
 from sqlalchemy.orm import joinedload
 from app import database
@@ -64,25 +65,25 @@ def dodaj_utwor_view():
     sesja = database.Session()
     if request.method == "POST":
         artysta = request.form.get("artysta")
-        idSesji = request.form.get("idSesji")
+        id_sesji = request.form.get("idSesji")
         tytul = request.form.get("tytul")
         try:
             nowy_utwor = Utwory(
-                IdArtysty=int(artysta), IdSesji=int(idSesji), Tytul=tytul
+                IdArtysty=int(artysta), IdSesji=int(id_sesji), Tytul=tytul
             )
             print(nowy_utwor)
             sesja.add(nowy_utwor)
             sesja.commit()
-        except Exception as e:
+        except (ValueError, IntegrityError) as e:
             sesja.rollback()
             print(f"Błąd podczas dodawania utworu: {e}")
         finally:
             sesja.close()
         return redirect(url_for("utwory.utwory_view"))
-    else:
-        try:
-            artysci = sesja.query(Artysci).order_by(Artysci.Nazwa).all()
-            sesje = sesja.query(Sesje).order_by(Sesje.IdSesji).all()
-            return render_template("dodaj_utwor.html", artysci=artysci, sesje=sesje)
-        finally:
-            sesja.close()
+
+    try:
+        artysci = sesja.query(Artysci).order_by(Artysci.Nazwa).all()
+        sesje = sesja.query(Sesje).order_by(Sesje.IdSesji).all()
+        return render_template("dodaj_utwor.html", artysci=artysci, sesje=sesje)
+    finally:
+        sesja.close()

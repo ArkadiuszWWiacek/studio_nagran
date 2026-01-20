@@ -1,10 +1,11 @@
+from sqlite3 import IntegrityError
 from flask import Blueprint, request, redirect, url_for, render_template
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 from app import database
 from app.models import Sesje, Artysci, Inzynierowie, Sprzet, SprzetySesje
 
-sesje_bp = Blueprint('sesje', __name__)
+sesje_bp = Blueprint("sesje", __name__)
 
 
 @sesje_bp.route("/")
@@ -81,8 +82,8 @@ def sesje_view():
         sesja.close()
 
 
-@sesje_bp.route("/<int:IdSesji>")
-def sesja_details_view(IdSesji):
+@sesje_bp.route("/<int:id_sesji>")
+def sesja_details_view(id_sesji):
     sesja = database.Session()
     try:
         sesja_details = (
@@ -91,7 +92,7 @@ def sesja_details_view(IdSesji):
             .options(joinedload(Sesje.inzynierowie))
             .options(joinedload(Sesje.utwory))
             .options(joinedload(Sesje.sprzety_sesje).joinedload(SprzetySesje.sprzet))
-            .where(Sesje.IdSesji == IdSesji)
+            .where(Sesje.IdSesji == id_sesji)
         )
         wynik_zapytania = sesja.execute(sesja_details)
         rezultat = wynik_zapytania.scalars().first()
@@ -112,38 +113,38 @@ def dodaj_sesje_view():
             termin_stop = None
         wybrane_sprzety_ids = request.form.getlist("sprzet")
         try:
-            nowa_sesja = Sesje(
+            nowa_sesja_nagraniowa = Sesje(
                 IdArtysty=id_artysty,
                 IdInzyniera=id_inzyniera,
                 TerminStart=termin_start,
                 TerminStop=termin_stop,
             )
-            sesja.add(nowa_sesja)
+            sesja.add(nowa_sesja_nagraniowa)
             sesja.flush()
             for id_sprzetu in wybrane_sprzety_ids:
                 powiazanie = SprzetySesje(
-                    IdSprzetu=int(id_sprzetu), IdSesji=nowa_sesja.IdSesji
+                    IdSprzetu=int(id_sprzetu), IdSesji=nowa_sesja_nagraniowa.IdSesji
                 )
                 sesja.add(powiazanie)
             sesja.commit()
-        except Exception as e:
+        except (ValueError, IntegrityError) as e:
             sesja.rollback()
-            print(f"Błąd podczas dodawania sesji: {e}")
+            print(f"Błąd podczas dodawania sesji nagraniowej: {e}")
         finally:
             sesja.close()
         return redirect(url_for("sesje.sesje_view"))
-    else:
-        try:
-            artysci = sesja.query(Artysci).order_by(Artysci.Nazwa).all()
-            inzynierowie = (
-                sesja.query(Inzynierowie).order_by(Inzynierowie.Nazwisko).all()
-            )
-            sprzety = sesja.query(Sprzet).order_by(Sprzet.Kategoria, Sprzet.Model).all()
-            return render_template(
-                "dodaj_sesje.html",
-                artysci=artysci,
-                inzynierowie=inzynierowie,
-                sprzety=sprzety,
-            )
-        finally:
-            sesja.close()
+
+    try:
+        artysci = sesja.query(Artysci).order_by(Artysci.Nazwa).all()
+        inzynierowie = (
+            sesja.query(Inzynierowie).order_by(Inzynierowie.Nazwisko).all()
+        )
+        sprzety = sesja.query(Sprzet).order_by(Sprzet.Kategoria, Sprzet.Model).all()
+        return render_template(
+            "dodaj_sesje.html",
+            artysci=artysci,
+            inzynierowie=inzynierowie,
+            sprzety=sprzety,
+        )
+    finally:
+        sesja.close()

@@ -3,7 +3,8 @@ from sqlalchemy import select
 from app import database
 from app.models import Artysci, Utwory
 
-artysci_bp = Blueprint('artysci', __name__)
+artysci_bp = Blueprint("artysci", __name__)
+
 
 @artysci_bp.route("/")
 def artysci_view():
@@ -53,32 +54,32 @@ def dodaj_artyste_view():
         finally:
             sesja.close()
         return redirect(url_for("artysci.artysci_view"))
-    else:
-        return render_template("dodaj_artyste.html")
+
+    return render_template("dodaj_artyste.html")
 
 
-@artysci_bp.route("/edytuj/<int:IdArtysty>", methods=["GET", "POST"])
-def edytuj_artyste_view(IdArtysty):
+@artysci_bp.route("/edytuj/<int:id_artysty>", methods=["GET", "POST"])
+def edytuj_artyste_view(id_artysty):
     sesja = database.Session()
     try:
-        artysta = sesja.query(Artysci).filter(Artysci.IdArtysty == IdArtysty).first()
+        artysta = sesja.query(Artysci).filter(Artysci.IdArtysty == id_artysty).first()
         if request.method == "POST":
             artysta.Nazwa = request.form.get("nazwa")
             artysta.Imie = request.form.get("imie")
             artysta.Nazwisko = request.form.get("nazwisko")
             sesja.commit()
             return redirect(url_for("artysci.artysci_view"))
-        else:
-            return render_template("edytuj_artyste.html", artysta=artysta)
+
+        return render_template("edytuj_artyste.html", artysta=artysta)
     finally:
         sesja.close()
 
 
-@artysci_bp.route("/<int:IdArtysty>")
-def utwory_artysty_view(IdArtysty):
+@artysci_bp.route("/<int:id_artysty>")
+def utwory_artysty_view(id_artysty):
     sesja = database.Session()
     try:
-        utwory_artysty = select(Utwory).where(Utwory.IdArtysty == IdArtysty)
+        utwory_artysty = select(Utwory).where(Utwory.IdArtysty == id_artysty)
         result = sesja.execute(utwory_artysty).scalars().all()
         return render_template("modal_utwory.html", utwory_artysty=result)
     finally:

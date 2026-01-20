@@ -51,17 +51,17 @@ def dodaj_inzyniera_view():
         finally:
             sesja.close()
         return redirect(url_for("inzynierowie.inzynierowie_view"))
-    else:
-        return render_template("dodaj_inzyniera.html")
+
+    return render_template("dodaj_inzyniera.html")
 
 
-@inzynierowie_bp.route("/edytuj/<int:IdInzyniera>", methods=["GET", "POST"])
-def edytuj_inzyniera_view(IdInzyniera):
+@inzynierowie_bp.route("/edytuj/<int:id_inzyniera>", methods=["GET", "POST"])
+def edytuj_inzyniera_view(id_inzyniera):
     sesja = database.Session()
     try:
         inzynier = (
             sesja.query(Inzynierowie)
-            .filter(Inzynierowie.IdInzyniera == IdInzyniera)
+            .filter(Inzynierowie.IdInzyniera == id_inzyniera)
             .first()
         )
         if request.method == "POST":
@@ -69,7 +69,7 @@ def edytuj_inzyniera_view(IdInzyniera):
             inzynier.Nazwisko = request.form.get("nazwisko")
             sesja.commit()
             return redirect(url_for("inzynierowie.inzynierowie_view"))
-        else:
-            return render_template("edytuj_inzyniera.html", inzynier=inzynier)
+
+        return render_template("edytuj_inzyniera.html", inzynier=inzynier)
     finally:
         sesja.close()
