@@ -223,7 +223,7 @@ app.run(host="0.0.0.0", port=5000, debug=False)
 
 ## Testy i narzędzia
 ### Testy
-**Architektura testów** opiera się na **warstwowym podejściu** z SQLite in-memory.
+**Architektura testów** opiera się na **warstwowym podejściu** z SQLite in-memory. **Wzorce:** AAA, factory pattern
 
 **Fixtures** w architekturze testów są **sercem systemu**, zamieniają 885+ linii boilerplate'u na 12 reużywalnych fabryk (`create_artist`: 8x, `client`: 10x)
 
@@ -236,8 +236,6 @@ app.run(host="0.0.0.0", port=5000, debug=False)
 - `test_services.py` (17 testów) - integracja serwisów z bazą 
 - `test_blueprints.py` (36 testów) - pełne testy HTTP/Flask z `client`
 - `test_*` - CLI, seed, inicjalizacja DB
-
-**Wzorce:** AAA, factory pattern
 
 100% code coverage z branch testing
 
