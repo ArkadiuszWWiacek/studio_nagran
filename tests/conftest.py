@@ -50,10 +50,10 @@ def _db_in_memory():
 
 @pytest.fixture(scope="function", name="client")
 def fixture_client() -> FlaskClient:
-    """Fixture klienta testowego."""
     test_app = create_app()
     test_app.config["TESTING"] = True
     test_app.config["WTF_CSRF_ENABLED"] = False
+    test_app.config["SECRET_KEY"] = "test-secret"
 
     with test_app.test_client() as test_client:
         with test_app.app_context():
@@ -62,7 +62,6 @@ def fixture_client() -> FlaskClient:
 
 @pytest.fixture(scope="function", name="db_session")
 def fixture_db_session():
-    """Jedna ścieżka transakcyjna jak w services.py."""
     with get_db_session() as session:
         yield session
 

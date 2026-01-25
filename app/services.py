@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime as dt
 
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
@@ -13,8 +13,8 @@ from app.models import Artysci, Inzynierowie, Sesje, SprzetySesje, Utwory
 class SessionData:
     idartysty: int
     idinzyniera: int
-    terminstart: datetime
-    terminstop: datetime
+    terminstart: dt
+    terminstop: dt
     sprzet_ids: list[int]
 
 @contextmanager
@@ -182,3 +182,19 @@ def get_sesje_for_utwor_form():
             }
             for r in rows
         ]
+
+def safe_date_parse(date_str):
+    date_str = (date_str or '').strip()
+    if not date_str:
+        raise ValueError("Pusta data")
+
+    date_str = date_str.replace('T', ' ')
+
+    date_part = date_str.split()[0].split('T')[0]
+    if len(date_part) != 10 or date_part.count('-') != 2:
+        raise ValueError("Zly format daty")
+
+    try:
+        return dt.strptime(date_str, '%Y-%m-%d %H:%M')
+    except ValueError as exc:
+        raise ValueError("Zly format daty") from exc

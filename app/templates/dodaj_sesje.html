@@ -13,6 +13,20 @@
                 </h2>
             </div>
         </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert-container mt-3">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show"
+                             role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert">
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
         <div class="row">
             <div class="col text-light">
                 <form method="post">
@@ -27,7 +41,10 @@
                                     -- Wybierz artystę --
                                 </option>
                                 {% for a in artysci %}
-                                    <option value="{{ a.IdArtysty }}">
+                                    <option value="{{ a.IdArtysty }}"
+                                            {% if form_data.artysta == a.IdArtysty|string %}
+                                                selected
+                                            {% endif %}>
                                         {{ a.Nazwa }} - {{ a.Imie }} {{ a.Nazwisko }}
                                     </option>
                                 {% endfor %}
@@ -45,7 +62,10 @@
                                     -- Wybierz inżyniera --
                                 </option>
                                 {% for i in inzynierowie %}
-                                    <option value="{{ i.IdInzyniera }}">
+                                    <option value="{{ i.IdInzyniera }}"
+                                            {% if form_data.inzynier == i.IdInzyniera|string %}
+                                                selected
+                                            {% endif %}>
                                         {{ i.Imie }} {{ i.Nazwisko }}
                                     </option>
                                 {% endfor %}
@@ -55,26 +75,28 @@
 
                     <div class="row mb-3">
                         <label for="termin_start" class="col-sm-4">
-                            Data rozpoczęcia sesji (format: YYYY-MM-DD HH:MM:SS):
+                            Data rozpoczęcia sesji (format: YYYY-MM-DD HH:MM):
                         </label>
                         <div class="col-sm-8">
                             <input type="text"
                                    name="termin_start"
                                    id="termin_start"
-                                   placeholder="2025-11-17 18:00:00"
+                                   value="{{ form_data.termin_start or '' }}"
+                                   placeholder="2025-11-17 18:00"
                                    class="form-control"
                                    required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="termin_stop" class="col-sm-4">
-                            Data zakończenia sesji (format: YYYY-MM-DD HH:MM:SS):
+                            Data zakończenia sesji (format: YYYY-MM-DD HH:MM):
                         </label>
                         <div class="col-sm-8">
                             <input type="text"
                                    name="termin_stop"
                                    id="termin_stop"
-                                   placeholder="2025-11-17 18:00:00"
+                                   value="{{ form_data.termin_stop or '' }}"
+                                   placeholder="2025-11-17 18:00"
                                    class="form-control">
                         </div>
                     </div>
@@ -89,7 +111,10 @@
                                        name="sprzet"
                                        value="{{ s.IdSprzetu }}"
                                        id="sprzet_{{ s.IdSprzetu }}"
-                                       class="form-check-input">
+                                       class="form-check-input"
+                                       {% if s.IdSprzetu|string in form_data.sprzet %}
+                                           checked
+                                       {% endif %}>
                                 <label for="sprzet_{{ s.IdSprzetu }}" class="form-check-label">
                                     {{ s.Kategoria }}: {{ s.Producent }} {{ s.Model }}
                                 </label>

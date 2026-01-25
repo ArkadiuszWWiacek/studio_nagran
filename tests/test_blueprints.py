@@ -1,3 +1,4 @@
+# coding: utf-8
 import app.views.sesje as sesje_view_module
 from app.models import Artysci, Inzynierowie, Sesje, SprzetySesje, Utwory
 from tests.test_types import (ArtystaFixtures, MonkeyPatchFixtures,
@@ -202,7 +203,7 @@ class TestSesjeEndpoints:
             data={
                 "artysta": str(artist.IdArtysty),
                 "inzynier": str(engineer.IdInzyniera),
-                "termin_start": "2025-05-01",
+                "termin_start": "2025-05-01 18:00",
                 "sprzet": [],
             },
             follow_redirects=True,
@@ -216,7 +217,7 @@ class TestSesjeEndpoints:
         ).first()
 
         assert sesja is not None
-        assert str(sesja.TerminStart)[:10] == "2025-05-01"
+        assert str(sesja.TerminStart.replace("T", " "))[:16] == "2025-05-01 18:00"
         assert sesja.TerminStop is None
 
     def test_dodaj_sesje_post_with_termin_stop(
@@ -230,8 +231,8 @@ class TestSesjeEndpoints:
             data={
                 "artysta": str(artist.IdArtysty),
                 "inzynier": str(engineer.IdInzyniera),
-                "termin_start": "2025-06-01",
-                "termin_stop": "2025-06-10",
+                "termin_start": "2025-06-01 15:00",
+                "termin_stop": "2025-06-10 18:00",
                 "sprzet": [],
             },
             follow_redirects=True,
@@ -241,8 +242,8 @@ class TestSesjeEndpoints:
 
         sesja = db_session.query(Sesje).filter_by(IdArtysty=artist.IdArtysty).first()
         assert sesja is not None
-        assert str(sesja.TerminStart)[:10] == "2025-06-01"
-        assert str(sesja.TerminStop)[:10] == "2025-06-10"
+        assert str(sesja.TerminStart.replace("T", " "))[:16] == "2025-06-01 15:00"
+        assert str(sesja.TerminStop.replace("T", " "))[:16] == "2025-06-10 18:00"
 
     def test_edytuj_sesje_get_renders_form(
         self,
@@ -274,7 +275,7 @@ class TestSesjeEndpoints:
             data={
                 "artysta": str(artist.IdArtysty),
                 "inzynier": str(engineer.IdInzyniera),
-                "termin_start": "2025-02-02",
+                "termin_start": "2025-02-02 12:00",
                 "sprzet": [str(eq1.IdSprzetu), str(eq2.IdSprzetu)],
             },
             follow_redirects=True,
@@ -282,7 +283,7 @@ class TestSesjeEndpoints:
         assert resp.status_code == 200
 
         refreshed = session_fixtures.db_session.query(Sesje).filter_by(IdSesji=sesja.IdSesji).one()
-        assert str(refreshed.TerminStart)[:10] == "2025-02-02"
+        assert str(refreshed.TerminStart).replace("T", " ")[:16] == "2025-02-02 12:00"
         assert session_fixtures.db_session.query(
             SprzetySesje
         ).filter_by(IdSesji=sesja.IdSesji).count() == 2
@@ -335,7 +336,7 @@ class TestSesjeEndpoints:
             data={
                 "artysta": str(artist.IdArtysty),
                 "inzynier": str(engineer.IdInzyniera),
-                "termin_start": "2025-02-02",
+                "termin_start": "2025-02-02 12:00",
                 "sprzet": [],
             },
             follow_redirects=False,
@@ -358,10 +359,108 @@ class TestSesjeEndpoints:
             data={
                 "artysta": "1",
                 "inzynier": "1",
-                "termin_start": "2025-01-01",
+                "termin_start": "2025-01-01 12:00",
                 "sprzet": [],
             },
             follow_redirects=False,
         )
 
         assert resp.status_code == 404
+
+    def test_dodaj_sesje_invalid_date_format(self, create_artist, create_engineer, client):
+        artist = create_artist(nazwa="InvalidDate")
+        engineer = create_engineer(imie="BadDate", nazwisko="Test")
+        resp = client.post(
+            "/sesje/dodaj",
+            data={
+                "artysta": str(artist.IdArtysty),
+                "inzynier": str(engineer.IdInzyniera),
+                "termin_start": "01-01-2025",
+                "sprzet": []
+            },
+            follow_redirects=False,
+        )
+        assert resp.status_code == 200
+        assert "Nieprawidłowy format".encode() in resp.data
+
+    def test_dodaj_sesje_empty_date(self, create_artist, create_engineer, client):
+        artist = create_artist(nazwa="EmptyDate")
+        engineer = create_engineer(imie="Empty", nazwisko="Date")
+        resp = client.post(
+            "/sesje/dodaj",
+            data={
+                "artysta": str(artist.IdArtysty),
+                "inzynier": str(engineer.IdInzyniera),
+                "termin_start": "",
+                "sprzet": []
+            },
+            follow_redirects=False,
+        )
+        assert resp.status_code == 200
+        assert "Nieprawidłowy".encode() in resp.data
+
+    def test_dodaj_sesje_malformed_date(self, create_artist, create_engineer, client):
+        artist = create_artist(nazwa="Malformed")
+        engineer = create_engineer(imie="Bad", nazwisko="Format")
+        resp = client.post(
+            "/sesje/dodaj",
+            data={
+                "artysta": str(artist.IdArtysty),
+                "inzynier": str(engineer.IdInzyniera),
+                "termin_start": "25/01/2026",
+                "sprzet": []
+            },
+            follow_redirects=False,
+        )
+        assert resp.status_code == 200
+        assert "Nieprawidłowy".encode() in resp.data
+
+    def test_dodaj_sesje_detailed_error_message(self, create_artist, create_engineer, client):
+        artist = create_artist(nazwa="DetailedError")
+        engineer = create_engineer(imie="Detail", nazwisko="Error")
+
+        resp = client.post(
+            "/sesje/dodaj",
+            data={
+                "artysta": str(artist.IdArtysty),
+                "inzynier": str(engineer.IdInzyniera),
+                "termin_start": "invalid-date",
+                "sprzet": []
+            },
+            follow_redirects=False,
+        )
+        assert resp.status_code == 200
+        assert "Nieprawidłowy format daty".encode() in resp.data
+
+    def test_dodaj_sesje_type_error_flash(self, create_artist, create_engineer, client): # pylint: disable=W0613
+        engineer = create_engineer(imie="Type", nazwisko="Error")
+
+        resp = client.post(
+            "/sesje/dodaj",
+            data={
+                "inzynier": str(engineer.IdInzyniera),
+                "termin_start": "2025-01-01 12:00",
+                "sprzet": []
+            },
+            follow_redirects=False,
+        )
+        assert resp.status_code == 200
+        assert "Nieprawidłowy format daty".encode() in resp.data
+
+    def test_edytuj_sesje_detailed_error(self, session_fixtures: SesjaFixtures):
+        artist = session_fixtures.create_artist(nazwa="EditError")
+        engineer = session_fixtures.create_engineer(imie="Edit", nazwisko="Error")
+        sesja = session_fixtures.create_session(artist, engineer)
+
+        resp = session_fixtures.client.post(
+            f"/sesje/edytuj/{sesja.IdSesji}",
+            data={
+                "artysta": str(artist.IdArtysty),
+                "inzynier": str(engineer.IdInzyniera),
+                "termin_start": "bad-date-format",
+                "sprzet": [],
+            },
+            follow_redirects=False,
+        )
+        assert resp.status_code == 200
+        assert "Nieprawidłowy format".encode() in resp.data

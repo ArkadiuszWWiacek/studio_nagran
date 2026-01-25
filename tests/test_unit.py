@@ -1,9 +1,9 @@
 from unittest.mock import Mock, patch, MagicMock
-from datetime import datetime
+from datetime import datetime as dt
 import pytest
 from sqlalchemy import inspect
 from sqlalchemy.orm import Session
-from app.services import get_all_sorted, create_record, get_by_id, update_record
+from app.services import get_all_sorted, create_record, get_by_id, update_record, safe_date_parse
 from app.models import Artysci, Inzynierowie
 
 class TestServices:
@@ -90,13 +90,68 @@ class TestModels:
     def test_inzynierowie_tablename(self):
         assert Inzynierowie.__tablename__ == 'inzynierowie'
 
-class TestSesjeLogic:
-    def test_parse_terminstart_valid(self):
-        terminstart_str = '2026-01-25'
-        terminstart = datetime.strptime(terminstart_str, '%Y-%m-%d')
-        assert terminstart.year == 2026
+class TestSafeDateParse:
+    def test_valid_datetime_space(self):
+        date = '2026-01-25 14:30'
+        
+        result = safe_date_parse(date)
+        
+        assert isinstance(result, dt)
+        assert result == dt(2026, 1, 25, 14, 30)
 
-    def test_parse_terminstop_none(self):
-        terminstop_str = None
-        terminstop = datetime.strptime(terminstop_str, '%Y-%m-%d') if terminstop_str else None
-        assert terminstop is None
+    def test_valid_datetime_iso_format(self):
+        date = '2026-01-25T14:30'
+        
+        result = safe_date_parse(date)
+        
+        assert isinstance(result, dt)
+        assert result == dt(2026, 1, 25, 14, 30)
+
+    def test_valid_midnight_explicit(self):
+        date = '2026-01-25 00:00'
+        
+        result = safe_date_parse(date)
+        
+        assert result == dt(2026, 1, 25, 0, 0)
+
+    def test_empty_string(self):
+        bad_input = ''
+        
+        with pytest.raises(ValueError, match='Pusta data'):
+            safe_date_parse(bad_input)
+
+    def test_none_input(self):
+        bad_input = None
+        
+        with pytest.raises(ValueError, match='Pusta data'):
+            safe_date_parse(bad_input)
+
+    def test_whitespace_only(self):
+        bad_input = '   '
+        
+        with pytest.raises(ValueError, match='Pusta data'):
+            safe_date_parse(bad_input)
+
+    def test_bad_date_part_length(self):
+        bad_input = '2026-01-2 14:30'
+        
+        with pytest.raises(ValueError, match='Zly format daty'):
+            safe_date_parse(bad_input)
+
+    def test_bad_date_part_dashes(self):
+        bad_input = '2026/01/25 14:30'
+        
+        with pytest.raises(ValueError, match='Zly format daty'):
+            safe_date_parse(bad_input)
+
+    def test_bad_time_format(self):
+        bad_input = '2026-01-25 14.30'
+        
+        with pytest.raises(ValueError, match='Zly format daty'):
+            safe_date_parse(bad_input)
+
+    def test_bad_date_order(self):
+        bad_input = '25-01-2026 14:30'
+        
+        with pytest.raises(ValueError, match='Zly format daty'):
+            safe_date_parse(bad_input)
