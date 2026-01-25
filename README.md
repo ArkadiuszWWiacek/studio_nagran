@@ -246,7 +246,11 @@ app.run(host="0.0.0.0", port=5000, debug=False)
 - `test_blueprints.py` (36 testów) - pełne testy HTTP/Flask z `client`
 - `test_*` - CLI, seed, inicjalizacja DB
 
-**Wzorce:** AAA, factory pattern, 100% code coverage z branch testing, **optymalna reużywalność** (`client`:10x, `create_artist`:8x). 
+**Wzorce:** AAA, factory pattern
+
+100% code coverage z branch testing
+
+**optymalna reużywalność** (`client`:10x, `create_artist`:8x). 
 
 **Wyniki:**
 - **szybkie** (3.5s/56 testów)
