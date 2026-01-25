@@ -28,39 +28,6 @@ Studio Nagrań to system zarządzania bazą danych studia nagraniowego zbudowany
 - **Baza danych**: SQLite
 - **Frontend**: HTML (Jinja2 templates)
 
-## Instalacja
-
-### 1. Sklonuj repozytorium
-
-```bash
-git clone https://github.com/ArkadiuszWWiacek/studio_nagran
-cd studio_nagran
-```
-
-### 2. Utwórz wirtualne środowisko
-
-```bash
-python -m venv .venv
-```
-
-### 3. Aktywuj wirtualne środowisko
-
-**Windows:**
-```bash
-.venv\Scripts\activate
-```
-
-**Linux/macOS:**
-```bash
-source .venv/bin/activate
-```
-
-### 4. Zainstaluj zależności
-
-```bash
-pip install -r requirements.txt
-```
-
 ## Struktura projektu
 
 ```
@@ -119,15 +86,6 @@ studio_nagran/
    ├── test_services.py
    └── test_types.py
 ```
-
-## Uruchomienie aplikacji
-Sprawdź sekcję ["Konfiguracja"](#konfiguracja)
-```bash
-python run.py
-```
-
-Aplikacja będzie dostępna pod adresem: `http://localhost:5000`
-
 ## Model bazy danych
 
 ### Tabele
@@ -207,6 +165,39 @@ Wszystkie widoki list obsługują sortowanie poprzez parametry URL:
 
 Przykład: `/artysci?sort=Nazwisko&order=desc`
 
+## Instalacja
+
+### 1. Sklonuj repozytorium
+
+```bash
+git clone https://github.com/ArkadiuszWWiacek/studio_nagran
+cd studio_nagran
+```
+
+### 2. Utwórz wirtualne środowisko
+
+```bash
+python -m venv .venv
+```
+
+### 3. Aktywuj wirtualne środowisko
+
+**Windows:**
+```bash
+.venv\Scripts\activate
+```
+
+**Linux/macOS:**
+```bash
+source .venv/bin/activate
+```
+
+### 4. Zainstaluj zależności
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Konfiguracja
 
 ### Baza danych
@@ -285,9 +276,17 @@ Windows
 ./run_tests.bat
 ```
 
-## Użycie AI
+## Uruchomienie aplikacji
+Sprawdź sekcję ["Konfiguracja"](#konfiguracja)
+```bash
+python run.py
+```
+
+Aplikacja będzie dostępna pod adresem: `http://localhost:5000`
+
+## Użycie AI w projekcie
 **Perplexity AI** (różne modele) zastosowano do:
-- generowanie/aktualizacja testów
+- generowanie/aktualizacja/refaktoryzacja testów
 - debugowanie
 - wyjaśnianie struktur (ORM relacje, fixtures pytest)
 
