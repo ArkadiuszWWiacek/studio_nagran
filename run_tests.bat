@@ -9,7 +9,7 @@ if %errorlevel% neq 0 (
 )
 
 echo Uruchamianie pylint...
---ignore=.venv --disable=C0114,C0115,C0116,R090
+pylint --ignore=.venv --disable=C0114,C0115,C0116,R0903 .
 if %errorlevel% neq 0 (
     echo Pylint nieudany!
     exit /b 2
