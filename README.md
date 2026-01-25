@@ -34,25 +34,25 @@ Studio Nagrań to system zarządzania bazą danych studia nagraniowego zbudowany
 
 ```bash
 git clone https://github.com/ArkadiuszWWiacek/studio_nagran
-cd studio-nagran
+cd studio_nagran
 ```
 
 ### 2. Utwórz wirtualne środowisko
 
 ```bash
-python -m venv venv
+python -m venv .venv
 ```
 
 ### 3. Aktywuj wirtualne środowisko
 
 **Windows:**
 ```bash
-venv\Scripts\activate
+.venv\Scripts\activate
 ```
 
 **Linux/macOS:**
 ```bash
-source venv/bin/activate
+source .venv/bin/activate
 ```
 
 ### 4. Zainstaluj zależności
@@ -64,7 +64,8 @@ pip install -r requirements.txt
 ## Struktura projektu
 
 ```
-studio/
+studio_nagran/
+├── .gitignore
 ├── config.py
 ├── pytest.ini
 ├── README.md
@@ -81,7 +82,7 @@ studio/
 │   ├── static/
 │   │   ├── style.css
 │   │   └── images/
-│   │      └── style.css
+│   │      └── colour_wave.jpg
 │   ├── templates/
 │   │   ├── artysci.html
 │   │   ├── base.html
@@ -111,6 +112,8 @@ studio/
 └── tests
    ├── __init__.py
    ├── conftest.py
+   ├── dokumentacja.md
+   ├── statystyki_uzycia.md
    ├── test_blueprints.py
    ├── test_database.py
    ├── test_services.py

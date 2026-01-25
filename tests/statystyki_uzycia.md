@@ -19,22 +19,13 @@
 | 9      | `simple_monkeypatch_fixtures` | **2x** | Proste mocki |
 | 10     | `create_song`             | **2x**  | Tworzenie utworów |
 
-### **DATACLASS (tylko definicje)**
-| Nazwa                    | Plik          | Status     |
-|--------------------------|---------------|------------|
-| `ArtystaFixtures`        | test_types.py | **Definicja** |
-| `SesjaFixtures`          | test_types.py | **Definicja** |
-| `MonkeyPatchFixtures`    | test_types.py | **Definicja** |
-| `SimpleMonkeyPatchFixtures` | test_types.py | **Definicja** |
-
 **RAZEM:**  
 📦 **12 unikalnych fixtures**  
 🔄 **51 wywołań fixtures**  
-🏷️ **4 dataclass** (tylko definicje)
 
 ***
 
-## **SZCZEGÓŁOWE MIEJSCA WYWOŁAŃ**
+## **SZCZEGÓŁY MIEJSC WYWOŁAŃ**
 
 ### **📁 conftest.py - DEFINICJE + SETUP**
 ```
