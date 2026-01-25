@@ -22,7 +22,9 @@ class TestServices:
         create_record(Artysci, Nazwa="BandA", Imie="Jan", Nazwisko="Kowalski")
         saved = db_session.query(Artysci).filter_by(Nazwa="BandA").first()
         assert saved is not None
+        assert saved.Nazwa == "BandA"
         assert saved.Imie == "Jan"
+        assert saved.Nazwisko == "Kowalski"
 
     def test_get_all_sorted_orders(self):
         create_record(Artysci, Nazwa="B")
@@ -60,7 +62,6 @@ class TestServices:
         assert saved is not None
 
     def test_create_sprzet_persists(self, db_session):
-        # Jeśli masz CHECK/ENUM na Kategoria, użyj dozwolonej wartości.
         create_record(Sprzet, Producent="P", Model="M", Kategoria="Mikrofony")
 
         saved = db_session.query(Sprzet).filter_by(Producent="P", Model="M").first()

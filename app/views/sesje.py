@@ -89,7 +89,6 @@ def edytuj_sesje_view(idsesji: int):
 
         return redirect(url_for("sesje.sesje_view"))
 
-    # GET: dane do selectów + zaznaczone checkboxy
     artysci = get_all_sorted(Artysci, "Nazwa", "asc")
     inzynierowie = get_all_sorted(Inzynierowie, "Nazwisko", "asc")
     sprzety = get_all_sorted(Sprzet, "Kategoria", "asc")

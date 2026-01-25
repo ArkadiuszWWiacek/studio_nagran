@@ -118,7 +118,7 @@ studio/
 ```
 
 ## Uruchomienie aplikacji
-
+Sprawdź sekcję ["Konfiguracja"](#konfiguracja)
 ```bash
 python run.py
 ```
@@ -229,7 +229,32 @@ app.run(host="0.0.0.0", port=5000, debug=False)
 
 ## Testy i narzędzia
 ### Testy
-**Jednostkowe** (services: sortowanie, CRUD, rollback błędów) i **integracyjne/end-to-end** (blueprints: GET/POST endpointy, redirecty, 404, monkeypatch symulacja błędów)
+**Architektura testów** opiera się na **warstwowym podejściu** z SQLite in-memory.
+
+**Fixtures** w architekturze testów są **sercem systemu**, zamieniają 885+ linii boilerplate'u na 12 reużywalnych fabryk (`create_artist`: 8x, `client`: 10x)
+
+**Composite dataclass** (`ArtystaFixtures`, `SesjaFixtures`) grupują powiązane fabryki, umożliwiając złożone scenariusze jednym wywołaniem. 
+
+**Fixture `_db_in_memory`** zapewnia **perfekcyjną izolację** - każdy test startuje z czystą bazą SQLite, gwarantując niezależność wyników. 
+
+**Kluczowe elementy:**
+- `conftest.py` - 12 fixtures (factories + composite dataclass)
+- `test_services.py` (17 testów) - integracja serwisów z bazą 
+- `test_blueprints.py` (36 testów) - pełne testy HTTP/Flask z `client`
+- `test_*` - CLI, seed, inicjalizacja DB
+
+**Wzorce:** AAA, factory pattern, 100% code coverage z branch testing, **optymalna reużywalność** (`client`:10x, `create_artist`:8x). 
+
+**Wyniki:**
+- **szybkie** (3.5s/56 testów)
+- **kompletne** (CRUD+edge cases)
+- **zrównoważone** (49% factories, 20% HTTP)
+
+**Jednostkowe/integracyjne** (services: sortowanie, CRUD, rollback błędów) i **integracyjne/end-to-end** (blueprints: GET/POST endpointy, redirecty, 404, monkeypatch symulacja błędów)
+- Dokumentacja testów: [/tests/dokumantacja.md](./tests/dokumentacja.md#wstep)
+- Raport: [/tests/statystyki_uzycia.md](./tests/statystyki_uzycia.md#podsumowanie)
+
+#### Uruchomienie testów
 ```bash
 pytest tests/ -v --cov=app --cov-report=term-missing
 ```
@@ -241,6 +266,8 @@ pylint ./ --ignore=.venv --disable=C0114,C0115,C0116,R0903
 ```
 
 ### Skrypt do uruchamiania testów
+Skrypt uruchamia testy z raportem pokrycia oraz analizę statyczną `pylint` z parametrami pominięcia błędów `missing-function-docstring` i `too-few-public-method`
+
 Linux / MacOS
 ```bash
 ./run_tests.sh

@@ -191,7 +191,7 @@ def fixture_session_with_equipment(
 def fixtures(# pylint: disable=too-many-arguments,too-many-positional-arguments
     create_artist, create_engineer, create_session, create_song, client, db_session
 ):
-    """Fixture zwracający dataclass z wszystkimi potrzebnymi fixtures"""
+
     return ArtystaFixtures(
         create_artist=create_artist,
         create_engineer=create_engineer,
