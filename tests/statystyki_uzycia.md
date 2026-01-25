@@ -4,24 +4,30 @@
 **Analiza statyczna kodu** 6 plików testowych
 
 ## **PODSUMOWANIE**
-
-### **📈 TOP 10 NAJCZĘŚCIEJ UŻYWANYCH FIXTURES**
-| Miejsce | Nazwa Fixture              | Wywołań | Główny cel |
-|---------|----------------------------|---------|------------|
-| 🥇     | `client`                  | **10x** | Testy HTTP endpointów |
-| 🥈     | `create_artist`           | **8x**  | Tworzenie artystów |
-| 🥉     | `create_engineer`         | **6x**  | Tworzenie inżynierów |
-| 4      | `create_session`          | **6x**  | Tworzenie sesji |
-| 5      | `db_session`              | **6x**  | Bezpośredni dostęp do bazy |
-| 6      | `fixtures` (composite)    | **4x**  | Pakiet dla artystów/utworów |
-| 7      | `session_fixtures`        | **2x**  | Pakiet dla sesji + sprzęt |
-| 8      | `monkeypatch_fixtures`    | **2x**  | Testy z mockami |
-| 9      | `simple_monkeypatch_fixtures` | **2x** | Proste mocki |
-| 10     | `create_song`             | **2x**  | Tworzenie utworów |
+### **📈 RANKING UŻYWANYCH FIXTURES**
+| Miejsce | Nazwa Fixture               | Wywołań TOTAL | Plik główny              |
+| ------- | --------------------------- | ------------- | ------------------------ |
+| 1🥇      | client                      | 12x           | conftest.py, blueprints  |
+| 2🥈      | create_artist               | 9x            | conftest.py, services    |
+| 3🥉      | create_engineer             | 7x            | conftest.py              |
+| 4🥉       | create_session              | 7x            | conftest.py              |
+| 5🥉       | db_session                  | 7x            | conftest.py              |
+| 6       | mock_session               | 6x            | test_unit.py             |
+| 7       | fixtures (composite)        | 5x            | conftest.py              |
+| 8       | session_fixtures            | 3x            | conftest.py              |
+| 9       | monkeypatch_fixtures        | 3x            | conftest.py              |
+| 10      | simple_monkeypatch_fixtures | 3x            | conftest.py              |
+| 11      | create_song                 | 3x            | conftest.py              |
+| 12   | utwory_base_setup           | 2x            | conftest.py → blueprints |
+| 13   | session_with_equipment      | 2x            | conftest.py → blueprints |
+| 14      | mock_db_seed                | 2x            | conftest.py → seed       |
 
 **RAZEM:**  
-📦 **12 unikalnych fixtures**  
-🔄 **51 wywołań fixtures**  
+📦 14 unikalnych fixtures
+
+🔄 72 wywołań
+ 
+🏷️ 4 dataclass
 
 ***
 
@@ -55,6 +61,11 @@
 ```
 🔧 create_artist             x1   (linia: 3)
 🔧 db_session                x1   (linia: 1)
+```
+
+### **📁 test_unit.py - SERWISY**
+```
+🔧 mock_session              x6   (linie: 22,32,42,55,68,81)
 ```
 
 ### **📁 test_database.py**

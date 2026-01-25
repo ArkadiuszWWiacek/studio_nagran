@@ -3,7 +3,7 @@
 ## Wstęp
 
 Projekt zawiera kompleksowy zestaw testów dla aplikacji Flask służącej do zarządzania studiem nagrań. Testy obejmują:
-- Testy jednostkowe modeli danych
+- Testy jednostkowe modeli danych i serwisów 
 - Testy integracyjne serwisów
 - Testy funkcjonalności endpointów blueprintów
 - Testy inicjalizacji bazy danych
@@ -21,12 +21,13 @@ Wszystkie testy działają na bazie SQLite in-memory dla szybkości i izolacji.
 |------|---------------|---------------|
 | `conftest.py` | Konfiguracja pytest, fixtures, setupy | - |
 | `test_types.py` | Definicje typów dataclass dla fixtures | - |
+| `test_unit.py` | Testy jednostkowe serwisów + modele SQLAlchemy |	10 |
 | `test_database.py` | Testy inicjalizacji bazy danych | 2 |
 | `test_seed.py` | Testy seed'owania bazy danych | 2 |
 | `test_services.py` | Testy integracyjne serwisów | 17 |
-| `test_blueprints.py` | Testy endpointów HTTP | 38+ |
+| `test_blueprints.py` | Testy endpointów HTTP | 36 |
 
-### 1.2 Struktura Bazy Danych Testowej
+### 1.2 Struktura Testowej Bazy Danych
 
 ```
 SQLite In-Memory
@@ -37,6 +38,40 @@ SQLite In-Memory
 ├── Sprzet (sprzęt)
 └── SprzetySesje (relacja wiele-do-wielu sesji i sprzętu)
 ```
+
+### 1.3 Testy Jednostkowe
+#### 1.3.1 TestServices (mock SQLAlchemy)
+Technika: @patch('app.services.get_db_session') + Mock(spec=Session)
+
+| Test | Testuje | Mocki | Asercje |
+|------|---------|-------|-------- |
+| `test_get_all_sorted_asc/desc` | Sortowanie rosnąco/malejąco | session.execute() | assert_called_once() |
+| `test_create_record` | Tworzenie rekordu | session.add(), flush() | instance.Nazwa == 'Test' |
+| `test_get_by_id_found/not_found` | Wyszukiwanie ID | query.filter.first() | result == mock_model / None |
+| `test_update_record` | Aktualizacja | session.merge() | instance.Nazwa == 'Updated' |
+
+#### 1.3.2 TestModels (struktura tabel)
+```python
+def test_artysci_tablename(self):
+    assert Artysci.__tablename__ == 'artysci'
+
+def test_artysci_columns(self):
+    insp = inspect(Artysci)
+    columns = [col.name for col in insp.c]
+    assert 'IdArtysty' in columns
+```
+
+#### 1.3.3 TestSesjeLogic (logika dat)
+```python
+def test_parse_terminstart_valid(self):
+    terminstart = datetime.strptime('2026-01-25', '%Y-%m-%d')
+    assert terminstart.year == 2026
+```
+
+**Zalety test_unit.py:**
+- Szybkie (~0.1s) - zero bazy danych
+- Izolowane - mock get_db_session
+- Precyzyjne - testują logikę serwisów bez efektów ubocznych
 
 ---
 
@@ -1127,6 +1162,7 @@ pytest --cov=app --cov-report=html
 
 | Moduł | Liczba Testów | Typ |
 |-------|---------------|-----|
+| test_unit.py | 12 | Jednostkowe |
 | test_database.py | 2 | Inicjalizacja bazy |
 | test_seed.py | 2 | Seed'owanie |
 | test_services.py | 17 | Integracyjne |

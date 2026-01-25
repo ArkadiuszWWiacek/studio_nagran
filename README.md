@@ -84,7 +84,8 @@ studio_nagran/
    ├── test_blueprints.py
    ├── test_database.py
    ├── test_services.py
-   └── test_types.py
+   ├── test_types.py
+   └── test_unit.py
 ```
 ## Model bazy danych
 
@@ -233,6 +234,7 @@ app.run(host="0.0.0.0", port=5000, debug=False)
 
 **Kluczowe elementy:**
 - `conftest.py` - 12 fixtures (factories + composite dataclass)
+- `test_unit.py` (10 testów) - testy jednostkowe serwisów z mockami SQLAlchemy
 - `test_services.py` (17 testów) - integracja serwisów z bazą 
 - `test_blueprints.py` (36 testów) - pełne testy HTTP/Flask z `client`
 - `test_*` - CLI, seed, inicjalizacja DB
@@ -246,7 +248,12 @@ app.run(host="0.0.0.0", port=5000, debug=False)
 - **kompletne** (CRUD+edge cases)
 - **zrównoważone** (49% factories, 20% HTTP)
 
-**Jednostkowe/integracyjne** (services: sortowanie, CRUD, rollback błędów) i **integracyjne/end-to-end** (blueprints: GET/POST endpointy, redirecty, 404, monkeypatch symulacja błędów)
+**Typy testów:**
+- Jednostkowe (test_unit.py): mock SQLAlchemy dla get_all_sorted, create_record, get_by_id
+- Integracyjne (test_services.py): serwisy + prawdziwa baza (sortowanie, relacje, błędy)
+- End-to-end (test_blueprints.py): pełne HTTP (GET/POST, redirecty, 404, monkeypatch błędów)
+
+**Dokumentacja i raporty:**
 - Dokumentacja testów: [/tests/dokumantacja.md](./tests/dokumentacja.md#wstep)
 - Raport: [/tests/statystyki_uzycia.md](./tests/statystyki_uzycia.md#podsumowanie)
 
