@@ -330,5 +330,5 @@ arkadiusz.wiacek@uth.pl
 
 ---
 
-**Wersja**: 1.0.0  
-**Data ostatniej aktualizacji**: 04.01.2026
+**Wersja**: 1.1.0  
+**Data ostatniej aktualizacji**: 25.01.2026
