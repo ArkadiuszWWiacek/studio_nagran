@@ -93,65 +93,65 @@ class TestModels:
 class TestSafeDateParse:
     def test_valid_datetime_space(self):
         date = '2026-01-25 14:30'
-        
+
         result = safe_date_parse(date)
-        
+
         assert isinstance(result, dt)
         assert result == dt(2026, 1, 25, 14, 30)
 
     def test_valid_datetime_iso_format(self):
         date = '2026-01-25T14:30'
-        
+
         result = safe_date_parse(date)
-        
+
         assert isinstance(result, dt)
         assert result == dt(2026, 1, 25, 14, 30)
 
     def test_valid_midnight_explicit(self):
         date = '2026-01-25 00:00'
-        
+
         result = safe_date_parse(date)
-        
+
         assert result == dt(2026, 1, 25, 0, 0)
 
     def test_empty_string(self):
         bad_input = ''
-        
+
         with pytest.raises(ValueError, match='Pusta data'):
             safe_date_parse(bad_input)
 
     def test_none_input(self):
         bad_input = None
-        
+
         with pytest.raises(ValueError, match='Pusta data'):
             safe_date_parse(bad_input)
 
     def test_whitespace_only(self):
         bad_input = '   '
-        
+
         with pytest.raises(ValueError, match='Pusta data'):
             safe_date_parse(bad_input)
 
     def test_bad_date_part_length(self):
         bad_input = '2026-01-2 14:30'
-        
+
         with pytest.raises(ValueError, match='Zly format daty'):
             safe_date_parse(bad_input)
 
     def test_bad_date_part_dashes(self):
         bad_input = '2026/01/25 14:30'
-        
+
         with pytest.raises(ValueError, match='Zly format daty'):
             safe_date_parse(bad_input)
 
     def test_bad_time_format(self):
         bad_input = '2026-01-25 14.30'
-        
+
         with pytest.raises(ValueError, match='Zly format daty'):
             safe_date_parse(bad_input)
 
     def test_bad_date_order(self):
         bad_input = '25-01-2026 14:30'
-        
+
         with pytest.raises(ValueError, match='Zly format daty'):
             safe_date_parse(bad_input)
