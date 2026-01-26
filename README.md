@@ -405,7 +405,7 @@ pylint ./ --ignore=.venv --disable=C0114,C0115,C0116,R0903
 - [ ] Zaawansowane wyszukiwanie i filtrowanie
 - [ ] Eksport danych do CSV/PDF
 - [ ] Dashboard ze statystykami
-- [ ] Autentykacja użytkowników
+- [ ] Uwierzytelnienie użytkowników
 - [ ] API REST
 
 ## Licencja
@@ -446,4 +446,3 @@ W przypadku pytań lub problemów, skontaktuj się z autorem projektu:
 **Wersja**: 1.2.0  
 **Data ostatniej aktualizacji**: 26.01.2026  
 **Status**: 🟢 Aktywny rozwój
-```
