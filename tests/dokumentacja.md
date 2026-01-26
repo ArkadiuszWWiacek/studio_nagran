@@ -1,28 +1,28 @@
-# Dokumentacja Testów - System Zarządzania Studio Nagrań
+# Dokumentacja Testów
 
 ## Wstęp
 
-Projekt zawiera kompleksowy zestaw testów napisany w `pytest`, obejmujący 10 plików testowych z ponad 60 przypadkami testowymi. Testy wykorzystują bazę danych SQLite w trybie in-memory, zapewniając izolację i szybkie wykonanie.
+Projekt zawiera kompleksowy zestaw testów napisany w `pytest`, obejmujący 6 plików testowych z ponad 60 przypadkami testowymi. Testy wykorzystują bazę danych SQLite w trybie in-memory, zapewniając izolację i szybkie wykonanie.
 
 ### Struktura katalogu `./tests`
 
 ```
 tests/
 ├── __init__.py                    # Pusty plik modułu
-├── conftest.py                    # Fixture i konfiguracja pytest (253 linii)
-├── dokumentacja.md                # Dokumentacja projektu
-├── statystyki_uzycia.md          # Statystyki użycia
-├── test_blueprints.py            # Testy integracyjne HTTP (436 linii, ~40 testów)
-├── test_database.py              # Testy inicjalizacji bazy (18 linii, 2 testy)
-├── test_seed.py                  # Testy seedowania danych (21 linia, 1 test)
-├── test_services.py              # Testy logiki biznesowej (234 linie, 18 testów)
-├── test_types.py                 # Dataklasy dla fixture (30 linii)
-└── test_unit.py                  # Testy jednostkowe z mockami (166 linii, ~15 testów)
+├── conftest.py                    # Fixture i konfiguracja pytest
+├── dokumentacja.md                # Dokumentacja testów
+├── statystyki_uzycia.md          # Statystyki użycia fixtures
+├── test_blueprints.py            # Testy integracyjne HTTP (~40 testów)
+├── test_database.py              # Testy inicjalizacji bazy (2 testy)
+├── test_seed.py                  # Testy seedowania danych (1 test)
+├── test_services.py              # Testy logiki biznesowej (18 testów)
+├── test_types.py                 # Dataklasy dla fixture
+└── test_unit.py                  # Testy jednostkowe z mockami (~15 testów)
 ```
 
 ***
 
-## 2. Plik `conftest.py` - Konfiguracja testów
+## 2. Konfiguracja testów `conftest.py`
 
 ### 2.1. Fixture `_db_in_memory` (autouse)
 
@@ -104,6 +104,7 @@ Projekt używa dataclass do grupowania powiązanych fixture:
 def mock_db_seed(monkeypatch):
     class MockConnection:
         executescript_called = commit_called = close_called = False
+...
 ```
 
 Używany w `test_seed.py` do weryfikacji wywołań bez faktycznego seedowania bazy.
@@ -128,8 +129,9 @@ Testy są podzielone na klasy według blueprintów:
 ```python
 def test_list_empty(self, client):
     response = client.get("/artysci/")
-    assert response.status_code == 200
     html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
     assert "Studio nagrań" in html
     assert "Artyści" in html
 ```
@@ -166,10 +168,11 @@ def test_dodaj_sesje_post_creates_session(self, create_artist, create_engineer, 
         follow_redirects=True,
     )
     
-    assert resp.status_code == 200
     sesja = db_session.query(Sesje).filter_by(
         IdArtysty=artist.IdArtysty
     ).first()
+
+    assert resp.status_code == 200
     assert sesja is not None
 ```
 
@@ -181,7 +184,7 @@ Projekt zawiera rozbudowane testy walidacji formatu daty:
 def test_dodaj_sesje_invalid_date_format(self, create_artist, create_engineer, client):
     # ... setup
     resp = client.post("/sesje/dodaj", data={
-        "termin_start": "01-01-2025",  # zły format
+        "termin_start": "01-01-2025",
     })
     assert resp.status_code == 200
     assert "Nieprawidłowy format".encode() in resp.data
@@ -214,6 +217,7 @@ def test_edytuj_sesje_post_hits_updated_none_branch(
     )
     
     resp = monkeypatch_fixtures.client.post(f"/sesje/edytuj/{sesja.IdSesji}", ...)
+
     assert resp.status_code == 404
 ```
 
@@ -241,7 +245,9 @@ Weryfikuje poprawne utworzenie wpisów w tabeli pośredniej `SprzetySesje`.
 ```python
 def test_create_record_persists_artist(self, db_session):
     create_record(Artysci, Nazwa="BandA", Imie="Jan", Nazwisko="Kowalski")
+
     saved = db_session.query(Artysci).filter_by(Nazwa="BandA").first()
+
     assert saved is not None
     assert saved.Nazwa == "BandA"
 ```
@@ -252,11 +258,11 @@ def test_create_record_persists_artist(self, db_session):
 ```python
 def test_update_record(self, db_session):
     create_record(Artysci, Nazwa="Before", Imie="Old")
+
     artist = db_session.query(Artysci).filter_by(Nazwa="Before").one()
-    
     update_record(artist, Nazwa="After", Imie="New")
-    
     refreshed = db_session.query(Artysci).filter_by(IdArtysty=artist.IdArtysty).one()
+
     assert refreshed.Nazwa == "After"
 ```
 
@@ -266,7 +272,9 @@ def test_update_record(self, db_session):
 def test_get_all_sorted_orders(self):
     create_record(Artysci, Nazwa="B")
     create_record(Artysci, Nazwa="A")
+
     result = get_all_sorted(Artysci, "Nazwa", "asc")
+
     assert [a.Nazwa for a in result] == ["A", "B"]
 ```
 
@@ -350,10 +358,12 @@ Funkcja ma **10 przypadków testowych** pokrywających:
 ```python
 def test_valid_datetime_space(self):
     result = safe_date_parse('2026-01-25 14:30')
+
     assert result == dt(2026, 1, 25, 14, 30)
 
 def test_valid_datetime_iso_format(self):
     result = safe_date_parse('2026-01-25T14:30')
+
     assert result == dt(2026, 1, 25, 14, 30)
 ```
 
@@ -523,36 +533,8 @@ Pozwala przetestować ścieżki błędów bez symulowania rzeczywistych awarii.
 
 ### 10.2. Metryki pokrycia
 
-Dodać `pytest-cov` do `requirements.txt`:
 ```bash
-pip install pytest-cov
 pytest --cov=app --cov-report=html
-```
-
-### 10.3. Dokumentacja testów
-
-Niektóre testy mogłyby mieć lepsze docstringi:
-```python
-def test_complex_scenario(self):
-    """
-    GIVEN: sesja z dwoma elementami sprzętu
-    WHEN: edytujemy sesję zmieniając sprzęt
-    THEN: tabela pośrednia jest zaktualizowana
-    """
-```
-
-### 10.4. Parametryzacja
-
-Zamiast wielu podobnych testów:
-```python
-@pytest.mark.parametrize("bad_date,expected_error", [
-    ("", "Pusta data"),
-    ("2026/01/25", "Zly format"),
-    ("25-01-2026", "Zly format"),
-])
-def test_invalid_dates(bad_date, expected_error):
-    with pytest.raises(ValueError, match=expected_error):
-        safe_date_parse(bad_date)
 ```
 
 ***
@@ -587,8 +569,6 @@ pytest tests/ -k "test_dodaj"
 ***
 
 ## 12. Podsumowanie
-
-Projekt `studio_nagran` zawiera **profesjonalnie napisane testy** z wykorzystaniem zaawansowanych technik pytest:
 
 ✅ **Mocne strony:**
 - Pełna izolacja testów przez in-memory DB

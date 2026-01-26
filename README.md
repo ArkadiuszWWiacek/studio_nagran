@@ -1,5 +1,3 @@
-# ZAKTUALIZOWANY README.md DLA PROJEKTU STUDIO_NAGRAN
-
 # Studio Nagrań 🎵
 
 ![Python Version](https://img.shields.io/badge/python-3.12+-blue.svg)
@@ -9,7 +7,7 @@
 
 Aplikacja webowa do zarządzania studiem nagrań, umożliwiająca rejestrację sesji nagraniowych, artystów, inżynierów dźwięku, sprzętu oraz utworów muzycznych.
 
-## 📋 Spis treści
+## Spis treści
 
 - [Autor](#autor)
 - [Opis projektu](#opis-projektu)
@@ -27,49 +25,49 @@ Aplikacja webowa do zarządzania studiem nagrań, umożliwiająca rejestrację s
 - [Planowane funkcjonalności](#planowane-funkcjonalności)
 - [Licencja](#licencja)
 
-## 👤 Autor
+## Autor
 
 **Arkadiusz Wiącek - 35027**  
-📧 arkadiusz.wiacek@uth.pl
+arkadiusz.wiacek@uth.pl
 
-## 📖 Opis projektu
+## Opis projektu
 
 Studio Nagrań to system zarządzania bazą danych studia nagraniowego zbudowany przy użyciu Flask i SQLAlchemy. Aplikacja umożliwia kompleksowe zarządzanie wszystkimi aspektami działalności studia, w tym:
 
-- 👨‍🎤 Rejestracja i zarządzanie artystami (soliści i zespoły)
-- 🎛️ Zarządzanie inżynierami dźwięku
-- 🎤 Katalog sprzętu studyjnego (mikrofony, przedwzmacniacze, efekty, itp.)
-- 📅 Planowanie i rejestracja sesji nagraniowych
-- 🎵 Katalog nagranych utworów
+- Rejestracja i zarządzanie artystami (soliści i zespoły)
+- Zarządzanie inżynierami dźwięku
+- Katalog sprzętu studyjnego (mikrofony, przedwzmacniacze, efekty, itp.)
+- Planowanie i rejestracja sesji nagraniowych
+- Katalog nagranych utworów
 
-## ✨ Funkcjonalności
+## Funkcjonalności
 
-### 🎤 Zarządzanie artystami
+### Zarządzanie artystami
 - ✅ Przeglądanie (`/artysci`) - lista wszystkich artystów z możliwością sortowania
 - ✅ Dodawanie (`/artysci/dodaj`) - formularz dodawania nowego artysty
 - ✅ Edycja (`/artysci/edytuj/<id>`) - formularz edycji danych artysty
 - ✅ Utwory artysty (`/artysci/<id>`) - lista utworów danego artysty (modal)
 
-### 🎛️ Zarządzanie inżynierami
+### Zarządzanie inżynierami
 - ✅ Przeglądanie (`/inzynierowie`) - lista wszystkich inżynierów z możliwością sortowania
 - ✅ Dodawanie (`/inzynierowie/dodaj`) - formularz dodawania nowego inżyniera
 - ✅ Edycja (`/inzynierowie/edytuj/<id>`) - formularz edycji danych inżyniera
 
-### 🎚️ Zarządzanie sprzętem
+### Zarządzanie sprzętem
 - ✅ Przeglądanie (`/sprzet`) - lista całego sprzętu z możliwością sortowania
 - ✅ Dodawanie (`/sprzet/dodaj`) - formularz dodawania nowego sprzętu
 
-### 🎵 Zarządzanie utworami
+### Zarządzanie utworami
 - ✅ Przeglądanie (`/utwory`) - lista wszystkich utworów z danymi artysty i sesji
 - ✅ Dodawanie (`/utwory/dodaj`) - formularz dodawania nowego utworu
 
-### 📅 Zarządzanie sesjami
+### Zarządzanie sesjami
 - ✅ Przeglądanie (`/sesje`) - lista wszystkich sesji z możliwością sortowania
 - ✅ Dodawanie (`/sesje/dodaj`) - formularz dodawania nowej sesji z wyborem sprzętu
 - ✅ Edycja (`/sesje/edytuj/<id>`) - formularz edycji sesji z możliwością zmiany sprzętu
 - ✅ Szczegóły sesji (`/sesje/<id>`) - pełne informacje o sesji, wykorzystanym sprzęcie i utworach
 
-### 🔍 Sortowanie danych
+### Sortowanie danych
 
 Wszystkie widoki list obsługują sortowanie poprzez parametry URL:
 - `sort` - kolumna do sortowania
@@ -77,13 +75,13 @@ Wszystkie widoki list obsługują sortowanie poprzez parametry URL:
 
 **Przykład:** `/artysci?sort=Nazwisko&order=desc`
 
-## 💻 Wymagania systemowe
+## Wymagania systemowe
 
 - Python 3.12+ lub nowszy
 - SQLite (wbudowane w Python)
 - Przeglądarka internetowa (Chrome, Firefox, Safari, Edge)
 
-## 🛠️ Technologie
+## Technologie
 
 | Kategoria | Technologia | Wersja |
 |-----------|-------------|---------|
@@ -97,109 +95,7 @@ Wszystkie widoki list obsługują sortowanie poprzez parametry URL:
 | **Linting** | pylint | 4.0.4 |
 | **CLI** | click | 8.3.1 |
 
-## 📦 Instalacja
-
-### 1. Sklonuj repozytorium
-
-```bash
-git clone https://github.com/ArkadiuszWWiacek/studio_nagran
-cd studio_nagran
-```
-
-### 2. Utwórz wirtualne środowisko
-
-```bash
-python -m venv .venv
-```
-
-### 3. Aktywuj wirtualne środowisko
-
-**Windows:**
-```bash
-.venv\Scripts\activate
-```
-
-**Linux/macOS:**
-```bash
-source .venv/bin/activate
-```
-
-### 4. Zainstaluj zależności
-
-```bash
-pip install -r requirements.txt
-```
-
-## ⚙️ Konfiguracja
-
-### Baza danych
-
-Domyślnie aplikacja korzysta z bazy SQLite `studio_nagran.db`, która jest tworzona automatycznie przy pierwszym uruchomieniu.
-
-Konfiguracja połączenia znajduje się w `app/database.py`:
-
-```python
-engine = create_engine("sqlite:///studio_nagran.db", echo=True, future=True)
-```
-
-### Inicjalizacja bazy danych
-
-Przed pierwszym użyciem zainicjalizuj strukturę bazy:
-
-```bash
-flask init-db
-```
-
-Komenda utworzy wszystkie wymagane tabele zgodnie z modelami SQLAlchemy.
-
-### Załadowanie danych przykładowych
-
-Aby załadować przykładowe dane (artystów, inżynierów, sprzęt, sesje):
-
-```bash
-flask seed
-```
-
-Dane przykładowe są wczytywane z pliku `seed_data.sql`.
-
-### Tryb debugowania
-
-Aplikacja domyślnie uruchamia się w trybie debug. W środowisku produkcyjnym zmień w `run.py`:
-
-```python
-app.run(host="0.0.0.0", port=5000, debug=False)
-```
-
-## 🚀 Uruchomienie aplikacji
-
-Po zakończeniu [konfiguracji](#konfiguracja) uruchom aplikację:
-
-```bash
-python run.py
-```
-
-Aplikacja będzie dostępna pod adresem: **`http://localhost:5000`**
-
-## 🔧 Komendy CLI
-
-Aplikacja udostępnia własne komendy Flask CLI:
-
-| Komenda | Opis |
-|---------|------|
-| `flask init-db` | Inicjalizuje strukturę bazy danych (tworzy tabele) |
-| `flask seed` | Wczytuje dane przykładowe z `seed_data.sql` |
-
-**Przykład użycia:**
-
-```bash
-# Inicjalizacja bazy
-flask init-db
-
-# Załadowanie przykładowych danych
-flask seed
-```
-
-## 🗄️ Model bazy danych
+## Model bazy danych
 
 ### Tabele
 
@@ -259,80 +155,164 @@ Sesje (1) ─────────────────────── 
 ## 📁 Struktura projektu
 
 ```
-studio_nagran/
-├── .gitignore                     # Pliki ignorowane przez Git
-├── config.py                      # Konfiguracja aplikacji
-├── pytest.ini                     # Konfiguracja pytest
-├── README.md                      # Dokumentacja projektu
-├── requirements.txt               # Zależności Python
-├── run.py                         # Punkt wejścia aplikacji
-├── run_tests.bat                  # Skrypt testów (Windows)
-├── run_tests.sh                   # Skrypt testów (Linux/macOS)
-├── seed_data.sql                  # Dane przykładowe SQL
-├── studio_nagran.db               # Baza danych SQLite (generowana)
-├── app/                           # Główny katalog aplikacji
-│   ├── __init__.py               # Factory aplikacji Flask
-│   ├── blueprints.py             # Rejestracja blueprintów
-│   ├── database.py               # Konfiguracja bazy danych
-│   ├── models.py                 # Modele SQLAlchemy
-│   ├── services.py               # Logika biznesowa
-│   ├── static/                   # Pliki statyczne
-│   │   ├── style.css            # Style CSS
-│   │   └── images/              # Obrazy
-│   │       └── colour_wave.jpg  # Tło aplikacji
-│   ├── templates/                # Szablony Jinja2
-│   │   ├── base.html            # Szablon bazowy
-│   │   ├── index.html           # Strona główna
-│   │   ├── artysci.html         # Lista artystów
-│   │   ├── dodaj_artyste.html   # Formularz dodawania artysty
-│   │   ├── edytuj_artyste.html  # Formularz edycji artysty
-│   │   ├── modal_utwory.html    # Modal z utworami artysty
-│   │   ├── inzynierowie.html    # Lista inżynierów
-│   │   ├── dodaj_inzyniera.html # Formularz dodawania inżyniera
-│   │   ├── edytuj_inzyniera.html# Formularz edycji inżyniera
-│   │   ├── sprzet.html          # Lista sprzętu
-│   │   ├── dodaj_sprzet.html    # Formularz dodawania sprzętu
-│   │   ├── utwory.html          # Lista utworów
-│   │   ├── dodaj_utwor.html     # Formularz dodawania utworu
-│   │   ├── sesje.html           # Lista sesji
-│   │   ├── dodaj_sesje.html     # Formularz dodawania sesji
-│   │   ├── edytuj_sesje.html    # Formularz edycji sesji
-│   │   ├── sesja_detale.html    # Szczegóły sesji
-│   │   └── modal_detale.html    # Modal ze szczegółami
-│   └── views/                    # Kontrolery (blueprinty)
+📁studio_nagran/
+├── .gitignore                      # Pliki ignorowane przez Git
+├── config.py                       # Konfiguracja aplikacji
+├── pytest.ini                      # Konfiguracja pytest
+├── README.md                       # Dokumentacja projektu
+├── requirements.txt                # Zależności Python
+├── run.py                          # Punkt wejścia aplikacji
+├── run_tests.bat                   # Skrypt testów (Windows)
+├── run_tests.sh                    # Skrypt testów (Linux/macOS)
+├── seed_data.sql                   # Dane przykładowe SQL
+├── studio_nagran.db                # Baza danych SQLite (generowana)
+├── 📁app/                          # Główny katalog aplikacji
+│   ├── __init__.py                 # Factory aplikacji Flask
+│   ├── blueprints.py               # Rejestracja blueprintów
+│   ├── database.py                 # Konfiguracja bazy danych
+│   ├── models.py                   # Modele SQLAlchemy
+│   ├── services.py                 # Logika biznesowa
+│   ├── 📁static/                   # Pliki statyczne
+│   │   ├── style.css               # Style CSS
+│   │   └── 📁images/               # Obrazy
+│   │       └── colour_wave.jpg     # Tło aplikacji
+│   ├── 📁templates/                # Szablony Jinja2
+│   │   ├── base.html               # Szablon bazowy
+│   │   ├── index.html              # Strona główna
+│   │   ├── artysci.html            # Lista artystów
+│   │   ├── dodaj_artyste.html      # Formularz dodawania artysty
+│   │   ├── edytuj_artyste.html     # Formularz edycji artysty
+│   │   ├── modal_utwory.html       # Modal z utworami artysty
+│   │   ├── inzynierowie.html       # Lista inżynierów
+│   │   ├── dodaj_inzyniera.html    # Formularz dodawania inżyniera
+│   │   ├── edytuj_inzyniera.html   # Formularz edycji inżyniera
+│   │   ├── sprzet.html             # Lista sprzętu
+│   │   ├── dodaj_sprzet.html       # Formularz dodawania sprzętu
+│   │   ├── utwory.html             # Lista utworów
+│   │   ├── dodaj_utwor.html        # Formularz dodawania utworu
+│   │   ├── sesje.html              # Lista sesji
+│   │   ├── dodaj_sesje.html        # Formularz dodawania sesji
+│   │   ├── edytuj_sesje.html       # Formularz edycji sesji
+│   │   ├── sesja_detale.html       # Szczegóły sesji
+│   │   └── modal_detale.html       # Modal ze szczegółami
+│   └── 📁views/                    # Kontrolery (blueprinty)
 │       ├── __init__.py
-│       ├── artysci.py           # Endpointy artystów
-│       ├── inzynierowie.py      # Endpointy inżynierów
-│       ├── sesje.py             # Endpointy sesji
-│       ├── sprzet.py            # Endpointy sprzętu
-│       └── utwory.py            # Endpointy utworów
-└── tests/                        # Testy automatyczne
+│       ├── artysci.py              # Endpointy artystów
+│       ├── inzynierowie.py         # Endpointy inżynierów
+│       ├── sesje.py                # Endpointy sesji
+│       ├── sprzet.py               # Endpointy sprzętu
+│       └── utwory.py               # Endpointy utworów
+└── 📁tests/                        # Testy automatyczne
     ├── __init__.py
-    ├── conftest.py              # Konfiguracja pytest + fixtures
-    ├── dokumentacja.md          # Dokumentacja testów
-    ├── statystyki_uzycia.md     # Raport użycia fixtures
-    ├── test_blueprints.py       # Testy HTTP/Flask (40 testów)
-    ├── test_database.py         # Testy inicjalizacji DB (2 testy)
-    ├── test_seed.py             # Testy seedowania (2 testy)
-    ├── test_services.py         # Testy logiki biznesowej (18 testów)
-    ├── test_types.py            # Typy pomocnicze (dataclass)
-    └── test_unit.py             # Testy jednostkowe z mockami (15 testów)
+    ├── conftest.py                 # Konfiguracja pytest + fixtures
+    ├── dokumentacja.md             # Dokumentacja testów
+    ├── statystyki_uzycia.md        # Raport użycia fixtures
+    ├── test_blueprints.py          # Testy HTTP/Flask (40 testów)
+    ├── test_database.py            # Testy inicjalizacji DB (2 testy)
+    ├── test_seed.py                # Testy seedowania (2 testy)
+    ├── test_services.py            # Testy logiki biznesowej (18 testów)
+    ├── test_types.py               # Typy pomocnicze (dataclass)
+    └── test_unit.py                # Testy jednostkowe z mockami (15 testów)
 ```
 
-## 🧪 Testy i narzędzia
+## Instalacja
+
+### 1. Sklonuj repozytorium
+
+```bash
+git clone https://github.com/ArkadiuszWWiacek/studio_nagran
+cd studio_nagran
+```
+
+### 2. Utwórz wirtualne środowisko
+
+```bash
+python -m venv .venv
+```
+
+### 3. Aktywuj wirtualne środowisko
+
+**Windows:**
+```bash
+.venv\Scripts\activate
+```
+
+**Linux/macOS:**
+```bash
+source .venv/bin/activate
+```
+
+### 4. Zainstaluj zależności
+
+```bash
+pip install -r requirements.txt
+```
+
+## Konfiguracja
+
+### Baza danych
+
+Domyślnie aplikacja korzysta z bazy SQLite `studio_nagran.db`, która jest tworzona automatycznie przy pierwszym uruchomieniu.
+
+Konfiguracja połączenia znajduje się w `app/database.py`:
+
+```python
+engine = create_engine("sqlite:///studio_nagran.db", echo=True, future=True)
+```
+
+### Inicjalizacja bazy danych
+
+Przed pierwszym użyciem zainicjalizuj strukturę bazy:
+
+```bash
+flask init-db
+```
+
+Komenda utworzy wszystkie wymagane tabele zgodnie z modelami SQLAlchemy.
+
+### Załadowanie danych przykładowych
+
+Aby załadować przykładowe dane (artystów, inżynierów, sprzęt, sesje):
+
+```bash
+flask seed
+```
+
+Dane przykładowe są wczytywane z pliku `seed_data.sql`.
+
+### Tryb debugowania
+
+Aplikacja domyślnie uruchamia się w trybie debug. W środowisku produkcyjnym zmień w `run.py`:
+
+```python
+app.run(host="0.0.0.0", port=5000, debug=False)
+```
+
+## Uruchomienie aplikacji
+
+Po zakończeniu [konfiguracji](#konfiguracja) uruchom aplikację:
+
+```bash
+python run.py
+```
+
+Aplikacja będzie dostępna pod adresem: **`http://localhost:5000`**
+
+
+## Testy i narzędzia
 
 ### Architektura testów
 
 Projekt wykorzystuje **profesjonalne podejście warstwowe** z SQLite in-memory:
 
-#### 📊 Statystyki testów
+#### Statystyki testów
 
 - **75+ testów** w 5 plikach testowych
-- **~3.5s** czas wykonania pełnego zestawu
+- **~4s** czas wykonania pełnego zestawu
 - **100% pokrycie** kluczowych ścieżek (CRUD + edge cases)
 - **Izolacja** poprzez świeżą bazę in-memory dla każdego testu
 
-#### 🔧 Fixtures
+#### Fixtures
 
 **12 reużywalnych fixtures** w `conftest.py`:
 
@@ -348,7 +328,7 @@ Projekt wykorzystuje **profesjonalne podejście warstwowe** z SQLite in-memory:
 
 **Wzorce:** AAA (Arrange-Act-Assert), Factory Pattern, Composite Fixtures
 
-#### 📂 Typy testów
+#### Typy testów
 
 | Plik | Liczba testów | Typ | Opis |
 |------|---------------|-----|------|
@@ -408,7 +388,7 @@ Pylint z pominiętymi komunikatami `missing-function-docstring` i `too-few-publi
 pylint ./ --ignore=.venv --disable=C0114,C0115,C0116,R0903
 ```
 
-## 🤖 Użycie AI w projekcie
+## Użycie AI w projekcie
 
 **Perplexity AI** (różne modele) zastosowano do:
 - ✅ Generowanie/aktualizacja/refaktoryzacja testów
@@ -417,15 +397,8 @@ pylint ./ --ignore=.venv --disable=C0114,C0115,C0116,R0903
 - ✅ Dokumentacja techniczna (README, raporty)
 - ✅ Optymalizacja kodu i best practices
 
-## 🚧 Planowane funkcjonalności
+## Planowane funkcjonalności
 
-### ✅ Zrealizowane
-- [x] Edycja sesji nagraniowych
-- [x] Pełne testy automatyczne (75+ testów)
-- [x] Dokumentacja techniczna
-- [x] CLI commands (seed, init-db)
-
-### 📋 W planach
 - [ ] Funkcjonalność usuwania rekordów (artystów, inżynierów, sprzętu, sesji, utworów)
 - [ ] Edycja utworów
 - [ ] Edycja sprzętu
@@ -435,7 +408,7 @@ pylint ./ --ignore=.venv --disable=C0114,C0115,C0116,R0903
 - [ ] Autentykacja użytkowników
 - [ ] API REST
 
-## 📄 Licencja
+## Licencja
 
 Ten projekt jest udostępniony na licencji **MIT License**.
 
@@ -463,10 +436,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## 📞 Wsparcie
+## Wsparcie
 
 W przypadku pytań lub problemów, skontaktuj się z autorem projektu:  
-📧 **arkadiusz.wiacek@uth.pl**
+**arkadiusz.wiacek@uth.pl**
 
 ---
 

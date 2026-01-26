@@ -8,29 +8,34 @@ from tests.test_types import (ArtystaFixtures, MonkeyPatchFixtures,
 class TestArtysciEndpoints:
     def test_index_contains_expected_content(self, client):
         resp = client.get("/")
-        assert resp.status_code == 200
         html = resp.get_data(as_text=True)
+
+        assert resp.status_code == 200
         assert "Studio nagrań" in html
 
     def test_list_empty(self, client):
         response = client.get("/artysci/")
-        assert response.status_code == 200
         html = response.get_data(as_text=True)
+
+        assert response.status_code == 200
         assert "Studio nagrań" in html
         assert "Artyści" in html
 
     def test_create_success(self, create_artist):
         artist = create_artist(nazwa="TestBand", imie="Jan", nazwisko="Kowalski")
+
         assert artist is not None
         assert artist.Imie == "Jan"
         assert artist.Nazwisko == "Kowalski"
 
     def test_list_defaults_sort_and_order(self, client):
         resp = client.get("/artysci/")
+
         assert resp.status_code == 200
 
     def test_dodaj_artyste_get_renders_form(self, client):
         resp = client.get("/artysci/dodaj")
+
         assert resp.status_code == 200
 
     def test_list_sorting(self, create_artist, client):
@@ -46,9 +51,9 @@ class TestArtysciEndpoints:
     def test_edytuj_get_renders_form(self, create_artist, client):
         artist = create_artist(nazwa="BandX", imie="Jan", nazwisko="Kowalski")
         resp = client.get(f"/artysci/edytuj/{artist.IdArtysty}")
+        html = resp.get_data(as_text=True)
 
         assert resp.status_code == 200
-        html = resp.get_data(as_text=True)
         assert "BandX" in html
 
     def test_edytuj_post_updates_and_redirects(self, create_artist, client, db_session):
@@ -59,9 +64,9 @@ class TestArtysciEndpoints:
             data={"nazwa": "After", "imie": "New", "nazwisko": "Y"},
             follow_redirects=True,
         )
-        assert resp.status_code == 200
-
         refreshed = db_session.query(Artysci).filter_by(IdArtysty=artist.IdArtysty).one()
+
+        assert resp.status_code == 200
         assert refreshed.Nazwa == "After"
         assert refreshed.Imie == "New"
         assert refreshed.Nazwisko == "Y"
@@ -69,36 +74,39 @@ class TestArtysciEndpoints:
     def test_utwory_artysty_renders_modal(self, create_artist, client):
         artist = create_artist(nazwa="BandU")
         resp = client.get(f"/artysci/utwory/{artist.IdArtysty}")
+
         assert resp.status_code == 200
 
     def test_utwory_artysty_renders_modal_contains_songs(self, fixtures: ArtystaFixtures):
         artist = fixtures.create_artist(nazwa="BandU")
         engineer = fixtures.create_engineer(imie="EngU", nazwisko="EU")
         sesja = fixtures.create_session(artist, engineer)
-
         title = "BandU - HitSingle"
         fixtures.create_song(artist, sesja, tytul=title)
-        assert fixtures.db_session.query(Utwory).filter_by(Tytul=title).count() == 1
 
         resp = fixtures.client.get(f"/artysci/utwory/{artist.IdArtysty}")
-        assert resp.status_code == 200
-
         html = resp.get_data(as_text=True)
+
+        assert fixtures.db_session.query(Utwory).filter_by(Tytul=title).count() == 1
+        assert resp.status_code == 200
         assert title in html
 
 
 class TestInzynierowieEndpoints:
     def test_create_success(self, create_engineer):
         eng = create_engineer(imie="TestAdam", nazwisko="TestNowak")
+
         assert eng is not None
         assert eng.Nazwisko == "TestNowak"
 
     def test_list_renders(self, client):
         response = client.get("/inzynierowie/")
+
         assert response.status_code == 200
 
     def test_list_defaults_sort_and_order(self, client):
         resp = client.get("/inzynierowie/")
+
         assert resp.status_code == 200
 
     def test_list_sorting(self, create_engineer, client):
@@ -106,25 +114,29 @@ class TestInzynierowieEndpoints:
         create_engineer(imie="Adam", nazwisko="A")
 
         resp = client.get("/inzynierowie/?sort=Imie&order=asc")
-        assert resp.status_code == 200
         html = resp.get_data(as_text=True)
+
+        assert resp.status_code == 200
         assert html.index("Adam") < html.index("Zenon")
 
     def test_dodaj_inzyniera_get_renders_form(self, client):
         resp = client.get("/inzynierowie/dodaj")
+
         assert resp.status_code == 200
 
     def test_dodaj_inzyniera_post_redirects(self, client):
         resp = client.post("/inzynierowie/dodaj", data={"imie": "R", "nazwisko": "D"})
+
         assert resp.status_code in (301, 302)
         assert "/inzynierowie/" in resp.headers.get("Location", "")
 
     def test_edytuj_get_renders_form(self, create_engineer, client):
         eng = create_engineer(imie="Jan", nazwisko="Kowalski")
+
         resp = client.get(f"/inzynierowie/edytuj/{eng.IdInzyniera}")
+        html = resp.get_data(as_text=True)
 
         assert resp.status_code == 200
-        html = resp.get_data(as_text=True)
         assert "Jan" in html
 
     def test_edytuj_post_updates_and_redirects(self, create_engineer, client, db_session):
@@ -135,9 +147,9 @@ class TestInzynierowieEndpoints:
             data={"imie": "New", "nazwisko": "Surname"},
             follow_redirects=True,
         )
+        refreshed = db_session.query(Inzynierowie).filter_by(IdInzyniera=eng.IdInzyniera).one()
 
         assert resp.status_code == 200
-        refreshed = db_session.query(Inzynierowie).filter_by(IdInzyniera=eng.IdInzyniera).one()
         assert refreshed.Imie == "New"
         assert refreshed.Nazwisko == "Surname"
 
@@ -145,6 +157,7 @@ class TestInzynierowieEndpoints:
 class TestSprzetEndpoints:
     def test_create_success(self, create_equipment):
         equip = create_equipment(producent="TestMic", model="TM1", kategoria="Mikrofony")
+
         assert equip is not None
         assert equip.Model == "TM1"
         assert equip.Kategoria == "Mikrofony"
@@ -157,14 +170,17 @@ class TestSprzetEndpoints:
 class TestUtworyEndpoints:
     def test_list_renders(self, client):
         resp = client.get("/utwory/")
+
         assert resp.status_code == 200
 
     def test_list_defaults_sort_and_order(self, client):
         resp = client.get("/utwory/")
+
         assert resp.status_code == 200
 
     def test_dodaj_utwor_get_renders_form(self, client):
         resp = client.get("/utwory/dodaj")
+
         assert resp.status_code == 200
 
     def test_dodaj_utwor_post_creates_song(self, utwory_base_setup, create_song):
@@ -186,10 +202,12 @@ class TestSesjeEndpoints:
 
     def test_list_renders(self, client):
         resp = client.get("/sesje/")
+
         assert resp.status_code == 200
 
     def test_dodaj_sesje_get_renders_form(self, client):
         resp = client.get("/sesje/dodaj")
+
         assert resp.status_code == 200
 
     def test_dodaj_sesje_post_creates_session(
@@ -209,13 +227,12 @@ class TestSesjeEndpoints:
             follow_redirects=True,
         )
 
-        assert resp.status_code == 200
-
         sesja = db_session.query(Sesje).filter_by(
             IdArtysty=artist.IdArtysty,
             IdInzyniera=engineer.IdInzyniera
         ).first()
 
+        assert resp.status_code == 200
         assert sesja is not None
         assert str(sesja.TerminStart.replace("T", " "))[:16] == "2025-05-01 18:00"
         assert sesja.TerminStop is None
@@ -238,9 +255,9 @@ class TestSesjeEndpoints:
             follow_redirects=True,
         )
 
-        assert resp.status_code == 200
-
         sesja = db_session.query(Sesje).filter_by(IdArtysty=artist.IdArtysty).first()
+
+        assert resp.status_code == 200
         assert sesja is not None
         assert str(sesja.TerminStart.replace("T", " "))[:16] == "2025-06-01 15:00"
         assert str(sesja.TerminStop.replace("T", " "))[:16] == "2025-06-10 18:00"
@@ -257,6 +274,7 @@ class TestSesjeEndpoints:
         sesja = create_session(artist, engineer)
 
         resp = client.get(f"/sesje/edytuj/{sesja.IdSesji}")
+
         assert resp.status_code == 200
 
     def test_edytuj_sesje_post_updates_and_equipment_links(self, session_fixtures: SesjaFixtures):
@@ -300,10 +318,12 @@ class TestSesjeEndpoints:
         sesja = create_session(artist, engineer)
 
         resp = client.get(f"/sesje/{sesja.IdSesji}")
+
         assert resp.status_code == 200
 
     def test_edytuj_sesje_returns_404_when_not_found(self, client):
         resp = client.get("/sesje/edytuj/999999")
+
         assert resp.status_code == 404
 
     def test_edytuj_sesje_post_returns_404_when_update_returns_none(self, client):
@@ -312,6 +332,7 @@ class TestSesjeEndpoints:
             data={"artysta": "1", "inzynier": "1", "termin_start": "2025-01-01", "sprzet": []},
             follow_redirects=False,
         )
+
         assert resp.status_code == 404
 
     def test_edytuj_sesje_post_hits_updated_none_branch(
@@ -370,6 +391,7 @@ class TestSesjeEndpoints:
     def test_dodaj_sesje_invalid_date_format(self, create_artist, create_engineer, client):
         artist = create_artist(nazwa="InvalidDate")
         engineer = create_engineer(imie="BadDate", nazwisko="Test")
+
         resp = client.post(
             "/sesje/dodaj",
             data={
@@ -380,12 +402,14 @@ class TestSesjeEndpoints:
             },
             follow_redirects=False,
         )
+
         assert resp.status_code == 200
         assert "Nieprawidłowy format".encode() in resp.data
 
     def test_dodaj_sesje_empty_date(self, create_artist, create_engineer, client):
         artist = create_artist(nazwa="EmptyDate")
         engineer = create_engineer(imie="Empty", nazwisko="Date")
+
         resp = client.post(
             "/sesje/dodaj",
             data={
@@ -396,12 +420,14 @@ class TestSesjeEndpoints:
             },
             follow_redirects=False,
         )
+
         assert resp.status_code == 200
         assert "Nieprawidłowy".encode() in resp.data
 
     def test_dodaj_sesje_malformed_date(self, create_artist, create_engineer, client):
         artist = create_artist(nazwa="Malformed")
         engineer = create_engineer(imie="Bad", nazwisko="Format")
+
         resp = client.post(
             "/sesje/dodaj",
             data={
@@ -412,6 +438,7 @@ class TestSesjeEndpoints:
             },
             follow_redirects=False,
         )
+
         assert resp.status_code == 200
         assert "Nieprawidłowy".encode() in resp.data
 
@@ -429,6 +456,7 @@ class TestSesjeEndpoints:
             },
             follow_redirects=False,
         )
+
         assert resp.status_code == 200
         assert "Nieprawidłowy format daty".encode() in resp.data
 
@@ -444,6 +472,7 @@ class TestSesjeEndpoints:
             },
             follow_redirects=False,
         )
+
         assert resp.status_code == 200
         assert "Nieprawidłowy format daty".encode() in resp.data
 
@@ -462,5 +491,6 @@ class TestSesjeEndpoints:
             },
             follow_redirects=False,
         )
+
         assert resp.status_code == 200
         assert "Nieprawidłowy format".encode() in resp.data

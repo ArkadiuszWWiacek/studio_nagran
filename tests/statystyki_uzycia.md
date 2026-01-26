@@ -1,4 +1,4 @@
-# RAPORT: Statystyki użycia fixtures w projekcie studio_nagran
+# RAPORT: Statystyki użycia fixtures w testach automatycznych
 
 **Data wygenerowania:** 26 stycznia 2026
 
@@ -7,8 +7,8 @@
 ## 1. Executive Summary
 
 - **Liczba zdefiniowanych fixtures:** 17
-- **Liczba wykorzystanych fixtures:** 16
-- **Fixtures nieużywane:** 1 (z powodu `autouse=True`)
+- **Liczba jawnie wywoływanych fixtures:** 16
+- **Fixtures wywoływane niejawnie:** 1 (`autouse=True`)
 - **Całkowita liczba wywołań fixtures:** 93
 - **Średnia liczba wywołań na fixture:** 5.81
 - **Najczęściej używany fixture:** `client` (33 wywołań)
@@ -18,17 +18,17 @@
 
 ## 2. Ranking fixtures według liczby wywołań
 
-| Pozycja | Fixture | Wywołania | Typ | Scope | Autouse |
-|---------|---------|-----------|-----|-------|---------|
-| 1 | `client` | 33 | flask_client | function | ❌ |
-| 2 | `create_engineer` | 14 | factory | function | ❌ |
-| 3 | `create_artist` | 13 | factory | function | ❌ |
-| 4 | `db_session` | 13 | database | function | ❌ |
-| 5 | `mock_session` | 6 | mock | function | ❌ |
-| 6 | `create_session` | 2 | factory | function | ❌ |
-| 7 | `session_fixtures` | 2 | dataclass | function | ❌ |
-| 8 | `mock_db_seed` | 2 | mock | function | ❌ |
-| 9-16 | *pozostałe* | 1 | różne | function | ❌ |
+| Pozycja | Fixture | Wywołania | Typ | Scope |
+|---------|---------|-----------|-----|-------|
+| 1 | `client` | 33 | flask_client | function |
+| 2 | `create_engineer` | 14 | factory | function |
+| 3 | `create_artist` | 13 | factory | function |
+| 4 | `db_session` | 13 | database | function |
+| 5 | `mock_session` | 6 | mock | function ||
+| 6 | `create_session` | 2 | factory | function |
+| 7 | `session_fixtures` | 2 | dataclass | function |
+| 8 | `mock_db_seed` | 2 | mock | function |
+| 9-16 | *pozostałe* | 1 | różne | function |
 
 ### Fixture wywoływany niejawnie
 
@@ -158,7 +158,7 @@ def _db_in_memory():
     # Po teście: cleanup
 ```
 
-**Analiza:** Kluczowy fixture zapewniający izolację testów. Chociaż nie jest "używany" explicite, działa dla każdego testu.
+**Analiza:** Kluczowy fixture zapewniający izolację testów. Chociaż nie jest "używany" jawnie, działa dla każdego testu.
 
 ***
 
