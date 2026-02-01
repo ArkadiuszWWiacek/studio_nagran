@@ -183,6 +183,14 @@ def get_sesje_for_utwor_form():
             for r in rows
         ]
 
+def get_selected_sprzet_ids(id_sesji):
+    with get_db_session() as session: 
+        selected_sprzet_ids = [
+                row.IdSprzetu
+                for row in session.query(SprzetySesje).filter_by(IdSesji=id_sesji).all()
+            ]
+        return selected_sprzet_ids
+
 def safe_date_parse(date_str):
     date_str = (date_str or '').strip()
     if not date_str:

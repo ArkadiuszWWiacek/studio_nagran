@@ -4,7 +4,7 @@ from app.models import Artysci, Inzynierowie, Sesje, Sprzet, SprzetySesje
 from app.services import (SessionData, create_session_with_equipment,
                           get_all_sorted, get_by_id, get_db_session,
                           get_session_details, get_sessions_sorted,
-                          update_session_with_equipment, safe_date_parse)
+                          update_session_with_equipment, get_selected_sprzet_ids, safe_date_parse)
 
 sesje_bp = Blueprint("sesje", __name__)
 
@@ -107,11 +107,7 @@ def edytuj_sesje_view(idsesji: int):
         'sprzety': get_all_sorted(Sprzet, "Kategoria", "asc")
     }
 
-    with get_db_session() as session:
-        selected_sprzet_ids = [
-            row.IdSprzetu
-            for row in session.query(SprzetySesje).filter_by(IdSesji=idsesji).all()
-        ]
+    selected_sprzet_ids = get_selected_sprzet_ids(idsesji)
 
     context = {
         "sesja": sesja,
