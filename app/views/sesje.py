@@ -1,8 +1,8 @@
 from flask import Blueprint, redirect, render_template, request, url_for, flash
 
-from app.models import Artysci, Inzynierowie, Sesje, Sprzet, SprzetySesje
+from app.models import Artysci, Inzynierowie, Sesje, Sprzet
 from app.services import (SessionData, create_session_with_equipment,
-                          get_all_sorted, get_by_id, get_db_session,
+                          get_all_sorted, get_by_id,
                           get_session_details, get_sessions_sorted,
                           update_session_with_equipment, get_selected_sprzet_ids, safe_date_parse)
 
